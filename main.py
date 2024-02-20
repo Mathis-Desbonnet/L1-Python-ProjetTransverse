@@ -2,6 +2,7 @@ import pygame
 import random
 from plateform import Platform
 from smallJump import smallJump
+from longJump import longJump
 
 
 class Main:
@@ -34,7 +35,11 @@ class Main:
         print(self.tick)
         if self.tick % 64 == 0:
             print(self.platformGroup.__len__())
-            self.platfomType = [Platform(x=1920, y=0), smallJump(x=1920, y=0)]
+            self.platfomType = [
+                Platform(x=1920, y=0),
+                smallJump(x=1920, y=0),
+                longJump(x=1920, y=0),
+            ]
             self.platformGroup.remove(self.platformGroup.sprites()[0])
             self.platformGroup.add(random.choice(self.platfomType))
 
