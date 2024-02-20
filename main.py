@@ -1,8 +1,9 @@
 import pygame
 import random
 from plateform import Platform
-from smallJump import smallJump
-from longJump import longJump
+from smallJump import SmallJump
+from longJump import LongJump
+from bumper import Bumper
 
 
 class Main:
@@ -19,6 +20,8 @@ class Main:
         self.platformGroup.add(Platform(x=1280, y=0))
         self.platformGroup.add(Platform(x=1920, y=0))
 
+        self.bumperGroup = pygame.sprite.Group()
+
         self.tick = 0
 
     def draw(self):
@@ -27,21 +30,38 @@ class Main:
         for platform in self.platformGroup.sprites():
             self.screen.blit(platform.image, platform.getCordinates())
 
+        for bumper in self.bumperGroup.sprites():
+            self.screen.blit(bumper.image, bumper.getCordinates())
+
     def platformMovement(self):
         for platform in self.platformGroup.sprites():
             platform.collision.x -= 10
 
+    def bumperMovement(self):
+        for bumper in self.bumperGroup.sprites():
+            bumper.collision.x -= 10
+
+    def deleteBumper(self, platformName):
+        if platformName == "long":
+            self.bumperGroup.remove(self.bumperGroup.sprites()[0])
+
     def createNewPlatform(self):
-        print(self.tick)
+        self.platfomType = [
+            Platform(x=1920, y=0),
+            SmallJump(x=1920, y=0),
+            LongJump(x=1920, y=0),
+        ]
+        self.platformGroup.add(random.choice(self.platfomType))
+        if self.platformGroup.sprites()[-1].name == "long":
+            self.bumperGroup.add(Bumper(x=1920, y=768))
+
+    def updateNewPlatform(self):
         if self.tick % 64 == 0:
-            print(self.platformGroup.__len__())
-            self.platfomType = [
-                Platform(x=1920, y=0),
-                smallJump(x=1920, y=0),
-                longJump(x=1920, y=0),
-            ]
+
+            self.deleteBumper(self.platformGroup.sprites()[0].name)
             self.platformGroup.remove(self.platformGroup.sprites()[0])
-            self.platformGroup.add(random.choice(self.platfomType))
+
+            self.createNewPlatform()
 
     def refreshScreen(self):
         self.draw()
@@ -56,8 +76,10 @@ class Main:
             self.tick += 1
 
             self.refreshScreen()
-            self.createNewPlatform()
+            self.updateNewPlatform()
             self.platformMovement()
+            self.bumperMovement()
+
             self.clock.tick(60)
 
 

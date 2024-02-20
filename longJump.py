@@ -2,9 +2,10 @@ import pygame
 from pygame.sprite import AbstractGroup
 
 
-class longJump(pygame.sprite.Sprite):
+class LongJump(pygame.sprite.Sprite):
     def __init__(self, *groups: AbstractGroup, x, y):
         super().__init__(*groups)
+        self.name = "long"
         self.image = pygame.image.load("./assets/long_jump.png")
         self.collision = self.image.get_rect()
         self.collision.x = x
