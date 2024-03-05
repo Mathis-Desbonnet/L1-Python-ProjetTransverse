@@ -7,7 +7,11 @@ def ySerieBasicJump(g: float, y: int, initialSpeed: int) -> float:
     y += int(-(1/2) * g * timeDelta + initialSpeed * timeDelta )
     return y, newSpeed
 
-
+def defineSpeedWithAngle(angle: int, platformSpeed: int, initialYSpeedForBasicJump: int) -> tuple:
+    """
+    Returns the x speed and the y speed for a bumper jump
+    """
+    return int(platformSpeed * (80 - angle) / 90), int(initialYSpeedForBasicJump * angle / 90)
 
 """
 g = 9.8
