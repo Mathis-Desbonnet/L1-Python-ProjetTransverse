@@ -24,6 +24,8 @@ class Main:
 
         self.tick = 0
 
+        self.speed = 80
+
     def draw(self):
         self.screen.blit(self.imageBack, (0, 0))
 
@@ -35,11 +37,11 @@ class Main:
 
     def platformMovement(self):
         for platform in self.platformGroup.sprites():
-            platform.collision.x -= 10
+            platform.collision.x -= self.speed 
 
     def bumperMovement(self):
         for bumper in self.bumperGroup.sprites():
-            bumper.collision.x -= 10
+            bumper.collision.x -= self.speed 
 
     def deleteBumper(self, platformName):
         if platformName == "long":
@@ -56,7 +58,7 @@ class Main:
             self.bumperGroup.add(Bumper(x=1920, y=768))
 
     def updateNewPlatform(self):
-        if self.tick % 64 == 0:
+        if self.tick % (640//self.speed) == 0:
 
             self.deleteBumper(self.platformGroup.sprites()[0].name)
             self.platformGroup.remove(self.platformGroup.sprites()[0])
@@ -80,7 +82,7 @@ class Main:
             self.platformMovement()
             self.bumperMovement()
 
-            self.clock.tick(60)
+            self.clock.tick(20)
 
 
 Main().run()
