@@ -2,10 +2,9 @@ import pygame
 from pygame.sprite import AbstractGroup
 
 
-class Platform(pygame.sprite.Sprite):
-    def __init__(self, *groups: AbstractGroup, x, y, image):
+class Bumper(pygame.sprite.Sprite):
+    def __init__(self, *groups: AbstractGroup, x, y, image) -> None:
         super().__init__(*groups)
-        self.name = "platform"
         self.image = image
         self.collision = self.image.get_rect()
         self.collision.x = x
@@ -13,3 +12,5 @@ class Platform(pygame.sprite.Sprite):
 
     def getCordinates(self):
         return (self.collision.x, self.collision.y)
+
+    # def onCollideWithBumper(self)
