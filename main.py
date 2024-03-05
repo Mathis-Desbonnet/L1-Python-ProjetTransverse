@@ -10,11 +10,11 @@ class Main:
     def __init__(self) -> None:
         self.screen = pygame.display.set_mode((1920, 1080))
         self.running = True
-        self.imageBack = pygame.image.load("./assets/sky_background.png")
-        self.imagefarground1 = pygame.image.load("./assets/farground_spr1.png")
-        self.imagefarground2 = pygame.image.load("./assets/farground_spr1.png")
-        self.imagefrontground1 = pygame.image.load("./assets/frontground_spr2.png")
-        self.imagefrontground2 = pygame.image.load("./assets/frontground_spr2.png")
+        self.imageBack = pygame.image.load("./assets/sky_background.png").convert_alpha()
+        self.imagefarground1 = pygame.image.load("./assets/farground_spr1.png").convert_alpha()
+        self.imagefarground2 = pygame.image.load("./assets/farground_spr1.png").convert_alpha()
+        self.imagefrontground1 = pygame.image.load("./assets/frontground_spr2.png").convert_alpha()
+        self.imagefrontground2 = pygame.image.load("./assets/frontground_spr2.png").convert_alpha()
 
         self.clock = pygame.time.Clock()
 
@@ -28,19 +28,21 @@ class Main:
 
         self.tick = 0
 
-        self.speed = 80
+        self.speed = 20
+        self.fargroundSpeed = 2
+        self.frontgroundSpeed = 10
         self.fargroundX = 0
         self.frontgroundX = 0
 
     def draw(self):
         self.screen.blit(self.imageBack, (0, 0))
         self.screen.blit(self.imagefarground1, (self.fargroundX, 0))
-        self.screen.blit(self.imagefarground2, (self.fargroundX+6144, 0))
+        self.screen.blit(self.imagefarground2, (self.fargroundX+3072, 0))
         self.screen.blit(self.imagefrontground1, (self.frontgroundX, 0))
-        self.screen.blit(self.imagefrontground2, (self.frontgroundX+6144, 0))
+        self.screen.blit(self.imagefrontground2, (self.frontgroundX+3072, 0))
 
-        self.fargroundX = (self.fargroundX-5)%-3072
-        self.frontgroundX = (self.frontgroundX-40)%-3072
+        self.fargroundX = (self.fargroundX-self.fargroundSpeed)%-3072
+        self.frontgroundX = (self.frontgroundX-self.frontgroundSpeed)%-3072
 
         for platform in self.platformGroup.sprites():
             self.screen.blit(platform.image, platform.getCordinates())
@@ -88,14 +90,14 @@ class Main:
                 if event.type == pygame.QUIT:
                     self.running = False
 
-            self.tick += 1
+            self.tick = (self.tick+1)%60
 
             self.refreshScreen()
             self.updateNewPlatform()
             self.platformMovement()
             self.bumperMovement()
 
-            self.clock.tick(20)
+            self.clock.tick(60)
 
 
 Main().run()
