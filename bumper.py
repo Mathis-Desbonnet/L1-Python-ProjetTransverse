@@ -3,9 +3,9 @@ from pygame.sprite import AbstractGroup
 
 
 class Bumper(pygame.sprite.Sprite):
-    def __init__(self, *groups: AbstractGroup, x, y) -> None:
+    def __init__(self, *groups: AbstractGroup, x, y, image) -> None:
         super().__init__(*groups)
-        self.image = pygame.image.load("./assets/bumper.png")
+        self.image = image
         self.collision = self.image.get_rect()
         self.collision.x = x
         self.collision.y = y
