@@ -11,8 +11,10 @@ class Main:
         self.screen = pygame.display.set_mode((1920, 1080))
         self.running = True
         self.imageBack = pygame.image.load("./assets/sky_background.png")
-        self.imagefarground = pygame.image.load("./assets/farground_spr.png")
-        self.imagefrontground = pygame.image.load("./assets/frontground_spr.png")
+        self.imagefarground1 = pygame.image.load("./assets/farground_spr1.png")
+        self.imagefarground2 = pygame.image.load("./assets/farground_spr1.png")
+        self.imagefrontground1 = pygame.image.load("./assets/frontground_spr2.png")
+        self.imagefrontground2 = pygame.image.load("./assets/frontground_spr2.png")
 
         self.clock = pygame.time.Clock()
 
@@ -32,13 +34,13 @@ class Main:
 
     def draw(self):
         self.screen.blit(self.imageBack, (0, 0))
-        self.screen.blit(self.imagefarground, (self.fargroundX, 0))
-        self.screen.blit(self.imagefarground, (self.fargroundX+6144, 0))
-        self.screen.blit(self.imagefrontground, (self.frontgroundX, 0))
-        self.screen.blit(self.imagefrontground, (self.frontgroundX+6144, 0))
+        self.screen.blit(self.imagefarground1, (self.fargroundX, 0))
+        self.screen.blit(self.imagefarground2, (self.fargroundX+6144, 0))
+        self.screen.blit(self.imagefrontground1, (self.frontgroundX, 0))
+        self.screen.blit(self.imagefrontground2, (self.frontgroundX+6144, 0))
 
-        self.fargroundX = (self.fargroundX-5)%-6144
-        self.frontgroundX = (self.frontgroundX-20)%-6144
+        self.fargroundX = (self.fargroundX-5)%-3072
+        self.frontgroundX = (self.frontgroundX-40)%-3072
 
         for platform in self.platformGroup.sprites():
             self.screen.blit(platform.image, platform.getCordinates())
