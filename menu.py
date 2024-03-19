@@ -1,7 +1,6 @@
 import pygame
-from main import Main
 
-class Main:
+class mainMenu:
     def __init__(self) -> None:
         self.screen = pygame.display.set_mode((1920, 1080))
         self.running = True
@@ -39,7 +38,8 @@ class Main:
         if keys[pygame.K_SPACE] :
             if not self.spaceIn :
                 if self.buttonNbr == 0 : #Launch
-                    print("Et là on passe au jeu :D")
+                    from main import Main
+                    self.running = False
                 elif self.buttonNbr == 1 : #Story
                     print("Il y entre un poulet et ressort une tourte")
                 else : self.running = False #Quit game
@@ -78,4 +78,4 @@ class Main:
             self.clock.tick(60)
 
 
-Main().run()
+mainMenu().run()
