@@ -28,8 +28,3 @@ while y < nextPlatformHeight:
     currentSpeed = ySerieBasicJump(g, y, currentSpeed)[1]
     print(y)
 """
-
-print(defineSpeedWithAngle(80, 40, 10))
-print(defineSpeedWithAngle(0, 40, 10))
-print(defineSpeedWithAngle(45, 40, 10))
-print(45*pi/180)
