@@ -1,9 +1,11 @@
 import pygame
 import random
 from plateform import Platform
+from player import Player
 from smallJump import SmallJump
 from longJump import LongJump
 from bumper import Bumper
+from fonctionTrajectoireY import ySerieBasicJump
 
 
 class Main:
@@ -32,6 +34,8 @@ class Main:
 
         self.bumperGroup = pygame.sprite.Group()
 
+        self.player = Player(200, 768)
+
         self.tick = 0
 
         self.speed = 20
@@ -40,21 +44,11 @@ class Main:
         self.fargroundX = 0
         self.frontgroundX = 0
 
-    def draw(self):
-        self.screen.blit(self.imageBack, (0, 0))
-        self.screen.blit(self.imagefarground1, (self.fargroundX, 0))
-        self.screen.blit(self.imagefarground2, (self.fargroundX+3072, 0))
-        self.screen.blit(self.imagefrontground1, (self.frontgroundX, 0))
-        self.screen.blit(self.imagefrontground2, (self.frontgroundX+3072, 0))
+        self.g = 9.8
+        self.currentSpeed = 0
+        self.nextPlatformHeight = 768
 
-        self.fargroundX = (self.fargroundX-self.fargroundSpeed)%-3072
-        self.frontgroundX = (self.frontgroundX-self.frontgroundSpeed)%-3072
-
-        for platform in self.platformGroup.sprites():
-            self.screen.blit(platform.image, platform.getCordinates())
-
-        for bumper in self.bumperGroup.sprites():
-            self.screen.blit(bumper.image, bumper.getCordinates())
+        self.isJumping = False
 
     def platformMovement(self):
         for platform in self.platformGroup.sprites():
@@ -87,6 +81,42 @@ class Main:
 
             self.createNewPlatform()
 
+    def isKeySpacePressed(self):
+        keys = pygame.key.get_pressed()
+
+        if self.isJumping:
+            if self.player.rect.y < self.nextPlatformHeight:
+                self.player.setYPos(ySerieBasicJump(self.g, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
+                self.currentSpeed = ySerieBasicJump(self.g, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
+            else:
+                self.player.setYPos(768)
+                self.currentSpeed = 0
+                self.isJumping = False
+
+        if keys[pygame.K_SPACE] and not self.isJumping:
+            print("Yes")
+            self.isJumping = True
+            self.currentSpeed = -50
+            self.player.setYPos(ySerieBasicJump(self.g, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
+
+    def draw(self):
+        self.screen.blit(self.imageBack, (0, 0))
+        self.screen.blit(self.imagefarground1, (self.fargroundX, 0))
+        self.screen.blit(self.imagefarground2, (self.fargroundX+3072, 0))
+        self.screen.blit(self.imagefrontground1, (self.frontgroundX, 0))
+        self.screen.blit(self.imagefrontground2, (self.frontgroundX+3072, 0))
+
+        self.fargroundX = (self.fargroundX-self.fargroundSpeed)%-3072
+        self.frontgroundX = (self.frontgroundX-self.frontgroundSpeed)%-3072
+
+        pygame.draw.rect(self.screen, (255, 0, 0), self.player.rect)
+
+        for platform in self.platformGroup.sprites():
+            self.screen.blit(platform.image, platform.getCordinates())
+
+        for bumper in self.bumperGroup.sprites():
+            self.screen.blit(bumper.image, bumper.getCordinates())
+
     def refreshScreen(self):
         self.draw()
         pygame.display.flip()
@@ -103,6 +133,7 @@ class Main:
             self.updateNewPlatform()
             self.platformMovement()
             self.bumperMovement()
+            self.isKeySpacePressed()
 
             self.clock.tick(60)
 
