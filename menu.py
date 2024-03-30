@@ -5,12 +5,12 @@ class mainMenu:
         self.screen = pygame.display.set_mode((1920, 1080))
         self.running = True
         self.imageBack = pygame.image.load("./assets/sky_background.png").convert_alpha()
-        self.imageLaunch = pygame.image.load("./assets/buttonLaunch.png").convert_alpha()
-        self.imageLaunch2 = pygame.image.load("./assets/buttonLaunch2.png").convert_alpha()
-        self.imageStory = pygame.image.load("./assets/buttonStory.png").convert_alpha()
-        self.imageStory2 = pygame.image.load("./assets/buttonStory2.png").convert_alpha()
-        self.imageQuit = pygame.image.load("./assets/buttonQuit.png").convert_alpha()
-        self.imageQuit2 = pygame.image.load("./assets/buttonQuit2.png").convert_alpha()
+        self.imageLaunch = pygame.image.load("./assets/button_play_0.png").convert_alpha()
+        self.imageLaunch2 = pygame.image.load("./assets/button_play_1.png").convert_alpha()
+        self.imageStory = pygame.image.load("./assets/button_story_0.png").convert_alpha()
+        self.imageStory2 = pygame.image.load("./assets/button_story_1.png").convert_alpha()
+        self.imageQuit = pygame.image.load("./assets/button_quit_0.png").convert_alpha()
+        self.imageQuit2 = pygame.image.load("./assets/button_quit_1.png").convert_alpha()
 
         self.clock = pygame.time.Clock()
         self.tick = 0
@@ -47,17 +47,17 @@ class mainMenu:
     def draw(self):
         self.screen.blit(self.imageBack, (0, 0))
         if self.buttonNbr == 0 :
-            self.screen.blit(self.imageLaunch2, (704, 100))
-            self.screen.blit(self.imageStory, (704, 300))
-            self.screen.blit(self.imageQuit, (704, 500))
+            self.screen.blit(self.imageLaunch2, (600, 300))
+            self.screen.blit(self.imageStory, (600, 450))
+            self.screen.blit(self.imageQuit, (600, 600))
         elif self.buttonNbr == 1 :
-            self.screen.blit(self.imageLaunch, (704, 100))
-            self.screen.blit(self.imageStory2, (704, 300))
-            self.screen.blit(self.imageQuit, (704, 500))
+            self.screen.blit(self.imageLaunch, (600, 300))
+            self.screen.blit(self.imageStory2, (600, 450))
+            self.screen.blit(self.imageQuit, (600, 600))
         else :
-            self.screen.blit(self.imageLaunch, (704, 100))
-            self.screen.blit(self.imageStory, (704, 300))
-            self.screen.blit(self.imageQuit2, (704, 500))
+            self.screen.blit(self.imageLaunch, (600, 300))
+            self.screen.blit(self.imageStory, (600, 450))
+            self.screen.blit(self.imageQuit2, (600, 600))
 
 
     def refreshScreen(self):
