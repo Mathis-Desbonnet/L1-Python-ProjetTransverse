@@ -16,6 +16,7 @@ class mainMenu:
         self.imagefarground2 = pygame.image.load("./assets/farground_spr2.png").convert_alpha()
         self.imagefrontground1 = pygame.image.load("./assets/frontground_spr1.png").convert_alpha()
         self.imagefrontground2 = pygame.image.load("./assets/frontground_spr2.png").convert_alpha()
+        self.imageLogo = pygame.image.load("./assets/logo_trans.png").convert_alpha()
 
         self.clock = pygame.time.Clock()
         self.tick = 0
@@ -63,6 +64,7 @@ class mainMenu:
         self.screen.blit(self.imagefarground2, (self.fargroundX2, 0))
         self.screen.blit(self.imagefrontground1, (self.frontgroundX1, 0))
         self.screen.blit(self.imagefrontground2, (self.frontgroundX2, 0))
+        self.screen.blit(self.imageLogo, (700, -25))
 
 
         if self.fargroundX1 <= -3072 : self.fargroundX1 = 3072
@@ -78,17 +80,17 @@ class mainMenu:
         self.frontgroundX2 = (self.frontgroundX2-self.frontgroundSpeed)
 
         if self.buttonNbr == 0 :
-            self.screen.blit(self.imageLaunch2, (600, 306))
-            self.screen.blit(self.imageStory, (600, 456))
-            self.screen.blit(self.imageQuit, (600, 606))
+            self.screen.blit(self.imageLaunch2, (600, 506))
+            self.screen.blit(self.imageStory, (600, 656))
+            self.screen.blit(self.imageQuit, (600, 806))
         elif self.buttonNbr == 1 :
-            self.screen.blit(self.imageLaunch, (600, 306))
-            self.screen.blit(self.imageStory2, (600, 456))
-            self.screen.blit(self.imageQuit, (600, 606))
+            self.screen.blit(self.imageLaunch, (600, 506))
+            self.screen.blit(self.imageStory2, (600, 656))
+            self.screen.blit(self.imageQuit, (600, 806))
         else :
-            self.screen.blit(self.imageLaunch, (600, 306))
-            self.screen.blit(self.imageStory, (600, 456))
-            self.screen.blit(self.imageQuit2, (600, 606))
+            self.screen.blit(self.imageLaunch, (600, 506))
+            self.screen.blit(self.imageStory, (600, 656))
+            self.screen.blit(self.imageQuit2, (600, 806))
 
 
     def refreshScreen(self):
