@@ -25,6 +25,12 @@ class Main:
         self.imagePlatform = pygame.image.load("./assets/roof_floor.png").convert_alpha()
         self.imageBig = pygame.image.load("./assets/long_jump.png").convert_alpha()
         self.imageBumper = pygame.image.load("./assets/bumper.png").convert_alpha()
+        
+        self.imageTextPause = pygame.image.load("./assets/text_pause.png").convert_alpha()#PAUSE CODE
+        self.imageTextResume = pygame.image.load("./assets/text_resume.png").convert_alpha()#PAUSE CODE
+        self.imageKeyEscape = pygame.image.load("./assets/key_escape.png").convert_alpha()#PAUSE CODE
+        self.imagePauseBack = pygame.image.load("./assets/pause_back.png").convert_alpha()#PAUSE CODE
+        self.imageQuit = pygame.image.load("./assets/button_quit_0.png").convert_alpha()#PAUSE CODE
 
         self.platformGroup = pygame.sprite.Group()
         self.platformGroup.add(Platform(x=0, y=0, image=self.imagePlatform))
@@ -53,6 +59,8 @@ class Main:
         self.needToFall = True
         
         self.ending = False
+        self.onPause = False #PAUSE CODE
+        self.isPausing = False #PAUSE CODE
 
     def fall(self):
             self.player.collisionBox.y += 5
@@ -91,18 +99,19 @@ class Main:
             self.bumperGroup.add(Bumper(x=1920, y=768, image=self.imageBumper))
 
     def updateNewPlatform(self):
-        if self.tick % (640//self.speed) == 0:
+        if self.speed != 0:#PAUSE CODE
+            if self.tick % (640//self.speed) == 0:
 
-            self.deleteBumper(self.platformGroup.sprites()[0].name)
-            self.platformGroup.remove(self.platformGroup.sprites()[0])
-            self.tick = 0
-            
-            if self.speed < self.maxSpeed:
-                self.speed += 1
-                self.fargroundSpeed += 1
-                self.frontgroundSpeed += 1
+                self.deleteBumper(self.platformGroup.sprites()[0].name)
+                self.platformGroup.remove(self.platformGroup.sprites()[0])
+                self.tick = 0
+                
+                if self.speed < self.maxSpeed:
+                    self.speed += 1
+                    self.fargroundSpeed += 1
+                    self.frontgroundSpeed += 1
 
-            self.createNewPlatform()
+                self.createNewPlatform()
             
     def fallingPosition(self):
         self.player.setYPos(ySerieBasicJump(self.g, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
@@ -122,9 +131,22 @@ class Main:
                 self.isJumping = False
 
         if keys[pygame.K_SPACE] and not self.isJumping:
-            self.isJumping = True
-            self.currentSpeed = -50
-            self.fallingPosition()
+            if self.onPause:#PAUSE CODE
+                from menu import mainMenu #PAUSE CODE
+                self.running = False #PAUSE CODE
+            else:
+                self.isJumping = True
+                self.currentSpeed = -50
+                self.fallingPosition()
+
+        if keys[pygame.K_ESCAPE]: #PAUSE CODE
+            if not self.isPausing:#PAUSE CODE
+                self.isPausing = True#PAUSE CODE
+                self.onPause = not(self.onPause) #PAUSE CODE
+                self.speed = 20*(not(self.onPause))#PAUSE CODE
+                self.fargroundSpeed = 2*(not(self.onPause))#PAUSE CODE
+                self.frontgroundSpeed = 10*(not(self.onPause))#PAUSE CODE
+        else : self.isPausing = False#PAUSE CODE
 
     def draw(self):
         self.screen.blit(self.imageBack, (0, 0))
@@ -143,6 +165,15 @@ class Main:
 
         for bumper in self.bumperGroup.sprites():
             self.screen.blit(bumper.image, bumper.getCordinates())
+            
+        if self.onPause :#PAUSE CODE
+            self.screen.blit(self.imagePauseBack, (0, 0))#PAUSE CODE
+            self.screen.blit(self.imageKeyEscape, (210, 80))#PAUSE CODE
+            self.screen.blit(self.imageQuit, (600, 456))#PAUSE CODE
+            self.screen.blit(self.imageTextResume, (350, 92))#PAUSE CODE
+        else :
+            self.screen.blit(self.imageKeyEscape, (210, 80))#PAUSE CODE
+            self.screen.blit(self.imageTextPause, (350, 92))#PAUSE CODE
 
     def refreshScreen(self):
         self.draw()
