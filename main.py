@@ -34,11 +34,12 @@ class Main:
 
         self.bumperGroup = pygame.sprite.Group()
 
-        self.player = Player(200, 768)
+        self.player = Player(200, 800)
 
         self.tick = 0
 
-        self.speed = 20
+        self.speed = 10
+        self.maxSpeed = 40
         self.fargroundSpeed = 2
         self.frontgroundSpeed = 10
         self.fargroundX = 0
@@ -49,10 +50,27 @@ class Main:
         self.nextPlatformHeight = 768
 
         self.isJumping = False
+        self.needToFall = True
+        
+        self.ending = False
+
+    def fall(self):
+            self.player.collisionBox.y += 5
+            self.needToFall = True
+            for platform in self.platformGroup.sprites():
+                for collision in platform.allCollision:
+                    if self.player.collisionBox.colliderect(collision):
+                        self.needToFall = False
+            if self.needToFall and self.isJumping == False:
+                self.currentSpeed = 50
+                self.ending = True
+            self.player.collisionBox.y = self.player.rect.y
 
     def platformMovement(self):
         for platform in self.platformGroup.sprites():
             platform.collision.x -= self.speed 
+            for collision in platform.allCollision:
+                collision.x -= self.speed
 
     def bumperMovement(self):
         for bumper in self.bumperGroup.sprites():
@@ -78,26 +96,35 @@ class Main:
             self.deleteBumper(self.platformGroup.sprites()[0].name)
             self.platformGroup.remove(self.platformGroup.sprites()[0])
             self.tick = 0
+            
+            if self.speed < self.maxSpeed:
+                self.speed += 1
+                self.fargroundSpeed += 1
+                self.frontgroundSpeed += 1
 
             self.createNewPlatform()
+            
+    def fallingPosition(self):
+        self.player.setYPos(ySerieBasicJump(self.g, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
+        self.player.collisionBox.y = ySerieBasicJump(self.g, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
 
     def isKeySpacePressed(self):
         keys = pygame.key.get_pressed()
 
         if self.isJumping:
-            if self.player.rect.y < self.nextPlatformHeight:
-                self.player.setYPos(ySerieBasicJump(self.g, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
+            if self.needToFall:
+                self.fallingPosition()
                 self.currentSpeed = ySerieBasicJump(self.g, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
             else:
-                self.player.setYPos(768)
+                self.player.setYPos(800)
+                self.player.collisionBox.y = 800
                 self.currentSpeed = 0
                 self.isJumping = False
 
         if keys[pygame.K_SPACE] and not self.isJumping:
-            print("Yes")
             self.isJumping = True
             self.currentSpeed = -50
-            self.player.setYPos(ySerieBasicJump(self.g, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
+            self.fallingPosition()
 
     def draw(self):
         self.screen.blit(self.imageBack, (0, 0))
@@ -129,13 +156,22 @@ class Main:
 
             self.tick = (self.tick+1)%60
 
-            self.refreshScreen()
-            self.updateNewPlatform()
-            self.platformMovement()
-            self.bumperMovement()
-            self.isKeySpacePressed()
+            if not self.ending:
+                self.refreshScreen()
+                self.updateNewPlatform()
+                self.platformMovement()
+                self.bumperMovement()
+                self.isKeySpacePressed()
+                self.fall()
+            else:
+                self.refreshScreen()
+                self.updateNewPlatform()
+                self.platformMovement()
+                self.bumperMovement()
+                self.fallingPosition()
+                self.currentSpeed = ySerieBasicJump(self.g, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
+
 
             self.clock.tick(60)
-
 
 Main().run()

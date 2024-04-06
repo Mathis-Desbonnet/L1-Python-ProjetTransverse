@@ -11,5 +11,9 @@ class Platform(pygame.sprite.Sprite):
         self.collision.x = x
         self.collision.y = y
 
+        self.allCollision = [
+            pygame.rect.Rect(x, 848, 640, 234)
+        ]
+        
     def getCordinates(self):
         return (self.collision.x, self.collision.y)
