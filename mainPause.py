@@ -27,11 +27,10 @@ class Main:
         self.imageBumper = pygame.image.load("./assets/bumper.png").convert_alpha()
 
         self.imageTextPause = pygame.image.load("./assets/text_pause.png").convert_alpha()#PAUSE CODE
-        self.imageLaunch2 = pygame.image.load("./assets/button_play_1.png").convert_alpha()#PAUSE CODE
-        self.imageStory = pygame.image.load("./assets/button_story_0.png").convert_alpha()#PAUSE CODE
-        self.imageStory2 = pygame.image.load("./assets/button_story_1.png").convert_alpha()#PAUSE CODE
+        self.imageTextResume = pygame.image.load("./assets/text_resume.png").convert_alpha()#PAUSE CODE
+        self.imageKeyEscape = pygame.image.load("./assets/key_escape.png").convert_alpha()#PAUSE CODE
+        self.imagePauseBack = pygame.image.load("./assets/pause_back.png").convert_alpha()#PAUSE CODE
         self.imageQuit = pygame.image.load("./assets/button_quit_0.png").convert_alpha()#PAUSE CODE
-        self.imageQuit2 = pygame.image.load("./assets/button_quit_1.png").convert_alpha()#PAUSE CODE
 
         self.platformGroup = pygame.sprite.Group()
         self.platformGroup.add(Platform(x=0, y=0, image=self.imagePlatform))
@@ -129,6 +128,7 @@ class Main:
         self.screen.blit(self.imagefarground2, (self.fargroundX+3072, 0))
         self.screen.blit(self.imagefrontground1, (self.frontgroundX, 0))
         self.screen.blit(self.imagefrontground2, (self.frontgroundX+3072, 0))
+        
 
         self.fargroundX = (self.fargroundX-self.fargroundSpeed)%-3072
         self.frontgroundX = (self.frontgroundX-self.frontgroundSpeed)%-3072
@@ -142,8 +142,13 @@ class Main:
             self.screen.blit(bumper.image, bumper.getCordinates())
 
         if self.onPause :#PAUSE CODE
+            self.screen.blit(self.imagePauseBack, (0, 0))#PAUSE CODE
+            self.screen.blit(self.imageKeyEscape, (210, 80))#PAUSE CODE
             self.screen.blit(self.imageQuit, (600, 456))#PAUSE CODE
-            self.screen.blit(self.imageTextPause, (600, 656))#PAUSE CODE
+            self.screen.blit(self.imageTextResume, (350, 92))#PAUSE CODE
+        else :
+            self.screen.blit(self.imageKeyEscape, (210, 80))#PAUSE CODE
+            self.screen.blit(self.imageTextPause, (350, 92))#PAUSE CODE
 
     def refreshScreen(self):
         self.draw()
