@@ -106,11 +106,6 @@ class Main:
                 self.deleteBumper(self.platformGroup.sprites()[0].name)
                 self.platformGroup.remove(self.platformGroup.sprites()[0])
                 self.tick = 0
-                
-                if self.speed < self.maxSpeed:
-                    self.speed += 1
-                    self.fargroundSpeed += 1
-                    self.frontgroundSpeed += 1
 
                 self.createNewPlatform()
             
@@ -186,6 +181,11 @@ class Main:
     def refreshScreen(self):
         self.draw()
         pygame.display.flip()
+        
+    def increaseSpeed(self):
+        self.speed += 1
+        self.fargroundSpeed += 1
+        self.frontgroundSpeed += 1
 
     def run(self):
         while self.running:
@@ -194,6 +194,11 @@ class Main:
                     self.running = False
 
             self.tick = (self.tick+1)%60
+            
+            if  pygame.time.get_ticks() % 10000 == 0:
+                self.increaseSpeed()
+                print(self.speed)
+                
 
             if not self.ending:
                 self.refreshScreen()
