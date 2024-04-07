@@ -40,7 +40,7 @@ class Main:
 
         self.bumperGroup = pygame.sprite.Group()
 
-        self.player = Player(200, 800)
+        self.player = Player(200, 710)
 
         self.tick = 0
 
@@ -50,8 +50,9 @@ class Main:
         self.frontgroundSpeed = 10
         self.fargroundX = 0
         self.frontgroundX = 0
+        self.anim = 0
 
-        self.g = 9.8
+        self.g = 7
         self.currentSpeed = 0
         self.nextPlatformHeight = 768
 
@@ -92,7 +93,7 @@ class Main:
         self.platfomType = [
             Platform(x=1920, y=0, image=self.imagePlatform),
             SmallJump(x=1920, y=0, image=self.imageSmall),
-            LongJump(x=1920, y=0, image=self.imageBig),
+            #LongJump(x=1920, y=0, image=self.imageBig),
         ]
         self.platformGroup.add(random.choice(self.platfomType))
         if self.platformGroup.sprites()[-1].name == "long":
@@ -125,8 +126,8 @@ class Main:
                 self.fallingPosition()
                 self.currentSpeed = ySerieBasicJump(self.g, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
             else:
-                self.player.setYPos(800)
-                self.player.collisionBox.y = 800
+                self.player.setYPos(710)
+                self.player.collisionBox.y = 710
                 self.currentSpeed = 0
                 self.isJumping = False
 
@@ -158,7 +159,14 @@ class Main:
         self.fargroundX = (self.fargroundX-self.fargroundSpeed)%-3072
         self.frontgroundX = (self.frontgroundX-self.frontgroundSpeed)%-3072
 
-        pygame.draw.rect(self.screen, (255, 0, 0), self.player.rect)
+        #pygame.draw.rect(self.screen, (255, 0, 0), self.player.rect)
+        
+        if self.isJumping:
+            self.screen.blit(self.player.images[0], self.player.getCoordinates())
+        else:
+            self.screen.blit(self.player.images[self.anim%4], self.player.getCoordinates())
+        if self.tick % (10-(self.speed//5)) == 0 and self.speed != 0:
+            self.anim += 1
 
         for platform in self.platformGroup.sprites():
             self.screen.blit(platform.image, platform.getCordinates())
