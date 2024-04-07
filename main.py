@@ -5,7 +5,7 @@ from player import Player
 from smallJump import SmallJump
 from longJump import LongJump
 from bumper import Bumper
-from fonctionTrajectoireY import ySerieBasicJump
+from fonctionTrajectoireY import ySerieBasicJump, defineSpeedWithAngle
 
 
 class Main:
@@ -52,7 +52,7 @@ class Main:
         self.frontgroundX = 0
         self.anim = 0
 
-        self.g = 7
+        self.g = 9.81
         self.currentSpeed = 0
         self.nextPlatformHeight = 768
 
@@ -62,6 +62,8 @@ class Main:
         self.ending = False
         self.onPause = False #PAUSE CODE
         self.isPausing = False #PAUSE CODE
+        
+        self.longJumpState = False
 
     def fall(self):
             self.player.collisionBox.y += 5
@@ -70,7 +72,7 @@ class Main:
                 for collision in platform.allCollision:
                     if self.player.collisionBox.colliderect(collision):
                         self.needToFall = False
-            if self.needToFall and self.isJumping == False:
+            if self.needToFall and self.isJumping == False and self.longJumpState == False:
                 self.currentSpeed = 50
                 self.ending = True
             self.player.collisionBox.y = self.player.rect.y
@@ -88,12 +90,44 @@ class Main:
     def deleteBumper(self, platformName):
         if platformName == "long":
             self.bumperGroup.remove(self.bumperGroup.sprites()[0])
+            
+    def bumperCollision(self):
+        if not self.longJumpState:
+            for bumper in self.bumperGroup.sprites():
+                if self.player.collisionBox.colliderect(bumper.collision):
+                    self.longJumpState = True
+                    
+                    self.currentSpeed = defineSpeedWithAngle(-45, self.speed)[1]
+                    self.speed = defineSpeedWithAngle(-45, self.speed)[0]
+                    self.frontgroundSpeed = self.speed
+                    self.fargroundSpeed = self.speed//5
+                    
+                    self.player.rect.y -= 100
+                    self.player.collisionBox.y -= 100
+                    
+                    print(self.speed, self.currentSpeed)
+                    
+                    self.player.setYPos(ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
+                    self.player.collisionBox.y = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
 
-    def createNewPlatform(self):
+    def longJump(self):
+        if self.longJumpState and self.needToFall:
+            self.player.setYPos(ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
+            self.player.collisionBox.y = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
+            self.currentSpeed = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
+        elif self.longJumpState:
+            self.player.setYPos(710)
+            self.player.collisionBox.y = 710
+            self.currentSpeed = 0
+            self.speed = 10
+            self.longJumpState = False
+            
+
+    def createNewPlatform(self, delta):
         self.platfomType = [
-            Platform(x=1920, y=0, image=self.imagePlatform),
-            SmallJump(x=1920, y=0, image=self.imageSmall),
-            #LongJump(x=1920, y=0, image=self.imageBig),
+            Platform(x=1920-delta, y=0, image=self.imagePlatform),
+            SmallJump(x=1920-delta, y=0, image=self.imageSmall),
+            LongJump(x=1920-delta, y=0, image=self.imageBig),
         ]
         self.platformGroup.add(random.choice(self.platfomType))
         if self.platformGroup.sprites()[-1].name == "long":
@@ -101,13 +135,15 @@ class Main:
 
     def updateNewPlatform(self):
         if self.speed != 0:#PAUSE CODE
-            if self.tick % (640//self.speed) == 0:
+            if self.platformGroup.sprites()[0].collision.x <= -640:
+                
+                delta = -640 - self.platformGroup.sprites()[0].collision.x
 
                 self.deleteBumper(self.platformGroup.sprites()[0].name)
                 self.platformGroup.remove(self.platformGroup.sprites()[0])
                 self.tick = 0
 
-                self.createNewPlatform()
+                self.createNewPlatform(delta)
             
     def fallingPosition(self):
         self.player.setYPos(ySerieBasicJump(self.g, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
@@ -184,7 +220,7 @@ class Main:
         
     def increaseSpeed(self):
         self.speed += 1
-        self.fargroundSpeed += 1
+        self.fargroundSpeed += 0.2
         self.frontgroundSpeed += 1
 
     def run(self):
@@ -195,9 +231,11 @@ class Main:
 
             self.tick = (self.tick+1)%60
             
-            if  pygame.time.get_ticks() % 10000 == 0:
+            if pygame.time.get_ticks() % 10000 == 0 and not self.longJumpState:
                 self.increaseSpeed()
                 print(self.speed)
+                
+            self.longJump()
                 
 
             if not self.ending:
@@ -206,6 +244,7 @@ class Main:
                 self.platformMovement()
                 self.bumperMovement()
                 self.isKeySpacePressed()
+                self.bumperCollision()
                 self.fall()
             else:
                 self.refreshScreen()
