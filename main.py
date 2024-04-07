@@ -52,7 +52,7 @@ class Main:
         self.frontgroundX = 0
         self.anim = 0
 
-        self.g = 9.8
+        self.g = 7
         self.currentSpeed = 0
         self.nextPlatformHeight = 768
 
@@ -161,8 +161,11 @@ class Main:
 
         #pygame.draw.rect(self.screen, (255, 0, 0), self.player.rect)
         
-        self.screen.blit(self.player.images[self.anim%4], self.player.getCoordinates())
-        if self.tick % (10-(self.speed//5)) == 0:
+        if self.isJumping:
+            self.screen.blit(self.player.images[0], self.player.getCoordinates())
+        else:
+            self.screen.blit(self.player.images[self.anim%4], self.player.getCoordinates())
+        if self.tick % (10-(self.speed//5)) == 0 and self.speed != 0:
             self.anim += 1
 
         for platform in self.platformGroup.sprites():
