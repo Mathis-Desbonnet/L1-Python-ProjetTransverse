@@ -64,6 +64,8 @@ class Main:
         self.isPausing = False #PAUSE CODE
         
         self.longJumpState = False
+        
+        self.saveSpeed = 0
 
     def fall(self):
             self.player.collisionBox.y += 5
@@ -90,9 +92,9 @@ class Main:
     def deleteBumper(self, platformName):
         if platformName == "long":
             self.bumperGroup.remove(self.bumperGroup.sprites()[0])
-            
+
     def bumperCollision(self):
-        if not self.longJumpState:
+        if not self.longJumpState and not self.ending:
             for bumper in self.bumperGroup.sprites():
                 if self.player.collisionBox.colliderect(bumper.collision):
                     self.longJumpState = True
@@ -111,17 +113,19 @@ class Main:
                     self.player.collisionBox.y = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
 
     def longJump(self):
-        if self.longJumpState and self.needToFall:
+        if self.longJumpState and self.needToFall and not self.onPause:
             self.player.setYPos(ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
             self.player.collisionBox.y = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
             self.currentSpeed = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
-        elif self.longJumpState:
-            self.player.setYPos(710)
-            self.player.collisionBox.y = 710
-            self.currentSpeed = 0
-            self.speed = 10
-            self.longJumpState = False
-            
+        elif self.longJumpState and not self.onPause:
+            if self.speed == 0:
+                self.ending = True
+            else:
+                self.player.setYPos(710)
+                self.player.collisionBox.y = 710
+                self.currentSpeed = 0
+                self.speed = 10
+                self.longJumpState = False
 
     def createNewPlatform(self, delta):
         self.platfomType = [
@@ -129,7 +133,11 @@ class Main:
             SmallJump(x=1920-delta, y=0, image=self.imageSmall),
             LongJump(x=1920-delta, y=0, image=self.imageBig),
         ]
-        self.platformGroup.add(random.choice(self.platfomType))
+        randomNumber = random.randint(0, 10)
+        if randomNumber < 10:
+            self.platformGroup.add(self.platfomType[randomNumber%2])
+        else:
+            self.platformGroup.add(self.platfomType[2])
         if self.platformGroup.sprites()[-1].name == "long":
             self.bumperGroup.add(Bumper(x=1920, y=768, image=self.imageBumper))
 
@@ -152,7 +160,7 @@ class Main:
     def isKeySpacePressed(self):
         keys = pygame.key.get_pressed()
 
-        if self.isJumping:
+        if self.isJumping and not self.onPause:
             if self.needToFall:
                 self.fallingPosition()
                 self.currentSpeed = ySerieBasicJump(self.g, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
@@ -164,6 +172,7 @@ class Main:
 
         if keys[pygame.K_SPACE] and not self.isJumping:
             if self.onPause:#PAUSE CODE
+                self.saveSpeed = self.speed
                 from menu import mainMenu #PAUSE CODE
                 self.running = False #PAUSE CODE
             else:
@@ -175,9 +184,15 @@ class Main:
             if not self.isPausing:#PAUSE CODE
                 self.isPausing = True#PAUSE CODE
                 self.onPause = not(self.onPause) #PAUSE CODE
-                self.speed = 20*(not(self.onPause))#PAUSE CODE
-                self.fargroundSpeed = 2*(not(self.onPause))#PAUSE CODE
-                self.frontgroundSpeed = 10*(not(self.onPause))#PAUSE CODE
+                if self.onPause:
+                    self.saveSpeed = self.speed
+                    self.speed = 0#PAUSE CODE
+                    self.fargroundSpeed = 0#PAUSE CODE
+                    self.frontgroundSpeed = 0#PAUSE CODE
+                else:
+                    self.speed = self.saveSpeed#PAUSE CODE
+                    self.fargroundSpeed = self.saveSpeed//5#PAUSE CODE
+                    self.frontgroundSpeed = self.saveSpeed#PAUSE CODE
         else : self.isPausing = False#PAUSE CODE
 
     def draw(self):
@@ -196,7 +211,7 @@ class Main:
             self.screen.blit(self.player.images[0], self.player.getCoordinates())
         else:
             self.screen.blit(self.player.images[self.anim%4], self.player.getCoordinates())
-        if self.tick % (10-(self.speed//5)) == 0 and self.speed != 0:
+        if self.tick % (10-(self.speed//5)) == 0 and self.speed != 0 and not self.onPause:
             self.anim += 1
 
         for platform in self.platformGroup.sprites():
