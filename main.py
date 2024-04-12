@@ -68,6 +68,8 @@ class Main:
 
         self.bumperAnim = 0
 
+        self.arrowImage = pygame.image.load("./assets/arrow_test.png").convert_alpha()
+
     def fall(self):
             self.player.collisionBox.y += 5
             self.needToFall = True
@@ -98,26 +100,37 @@ class Main:
         if not self.longJumpState and not self.ending:
             for bumper in self.bumperGroup.sprites():
                 if self.player.collisionBox.colliderect(bumper.collision):
-                    self.longJumpState = True
-                    
-                    self.currentSpeed = defineSpeedWithAngle(-45, self.speed)[1]
-                    self.speed = defineSpeedWithAngle(-45, self.speed)[0]
-                    self.frontgroundSpeed = self.speed
-                    self.fargroundSpeed = self.speed//5
-                    
-                    self.player.rect.y -= 100
-                    self.player.collisionBox.y -= 100
-                    
-                    print(self.speed, self.currentSpeed)
-                    
-                    self.player.setYPos(ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
-                    self.player.collisionBox.y = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
+
+                    self.saveSpeed = self.speed
+                    self.speed = 0
+                    self.frontgroundSpeed = 0
+                    self.fargroundSpeed = 0
 
                     self.bumperAnim = 1
 
+                    self.longJumpState = True
                     bumper.collidedWithBumper = True
 
+                    self.player.rect.y -= 100
+                    self.player.collisionBox.y -= 100
 
+    def chooseAngle(self):
+        if self.speed == 0 and self.longJumpState and not self.onPause:
+            self.screen.blit(self.arrowImage, (400, 400))
+            if pygame.key.get_pressed()[pygame.K_SPACE]:
+                self.speed = self.saveSpeed
+                self.frontgroundSpeed = self.speed
+                self.fargroundSpeed = self.speed//5
+
+                self.currentSpeed = defineSpeedWithAngle(-45, self.speed)[1]
+                self.speed = defineSpeedWithAngle(-45, self.speed)[0]
+                self.frontgroundSpeed = self.speed
+                self.fargroundSpeed = self.speed//5
+                    
+                print(self.speed, self.currentSpeed)
+                    
+                self.player.setYPos(ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
+                self.player.collisionBox.y = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
 
     def longJump(self):
         if self.longJumpState and self.needToFall and not self.onPause and self.speed != 0:
@@ -126,10 +139,7 @@ class Main:
             self.currentSpeed = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
             if self.bumperAnim < 6:
                 self.bumperAnim += 1
-        elif self.longJumpState and not self.onPause:
-            if self.speed == 0:
-                self.ending = True
-            else:
+        elif self.longJumpState and not self.onPause and self.speed != 0:
                 self.player.setYPos(710)
                 self.player.collisionBox.y = 710
                 self.currentSpeed = 0
@@ -179,7 +189,7 @@ class Main:
                 self.currentSpeed = 0
                 self.isJumping = False
 
-        if keys[pygame.K_SPACE] and not self.isJumping:
+        if keys[pygame.K_SPACE] and not self.isJumping and not self.longJumpState:
             if self.onPause:#PAUSE CODE
                 self.saveSpeed = self.speed
                 from menu import mainMenu #PAUSE CODE
@@ -242,6 +252,7 @@ class Main:
             self.screen.blit(self.imageTextPause, (350, 92))#PAUSE CODE
 
     def refreshScreen(self):
+        self.chooseAngle()
         self.draw()
         pygame.display.flip()
         
@@ -263,9 +274,6 @@ class Main:
                 print(self.speed)
                 
             self.longJump()
-
-
-                
 
             if not self.ending:
                 self.refreshScreen()
