@@ -24,7 +24,6 @@ class Main:
         self.imageSmall = pygame.image.load("./assets/regular_jump.png").convert_alpha()
         self.imagePlatform = pygame.image.load("./assets/roof_floor.png").convert_alpha()
         self.imageBig = pygame.image.load("./assets/long_jump.png").convert_alpha()
-        self.imageBumper = pygame.image.load("./assets/bumper.png").convert_alpha()
         
         self.imageTextPause = pygame.image.load("./assets/text_pause.png").convert_alpha()#PAUSE CODE
         self.imageTextResume = pygame.image.load("./assets/text_resume.png").convert_alpha()#PAUSE CODE
@@ -66,6 +65,8 @@ class Main:
         self.longJumpState = False
         
         self.saveSpeed = 0
+
+        self.bumperAnim = 0
 
     def fall(self):
             self.player.collisionBox.y += 5
@@ -112,11 +113,19 @@ class Main:
                     self.player.setYPos(ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
                     self.player.collisionBox.y = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
 
+                    self.bumperAnim = 1
+
+                    bumper.collidedWithBumper = True
+
+
+
     def longJump(self):
-        if self.longJumpState and self.needToFall and not self.onPause:
+        if self.longJumpState and self.needToFall and not self.onPause and self.speed != 0:
             self.player.setYPos(ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
             self.player.collisionBox.y = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
             self.currentSpeed = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
+            if self.bumperAnim < 6:
+                self.bumperAnim += 1
         elif self.longJumpState and not self.onPause:
             if self.speed == 0:
                 self.ending = True
@@ -139,7 +148,7 @@ class Main:
         else:
             self.platformGroup.add(self.platfomType[2])
         if self.platformGroup.sprites()[-1].name == "long":
-            self.bumperGroup.add(Bumper(x=1920, y=768, image=self.imageBumper))
+            self.bumperGroup.add(Bumper(x=1920, y=720))
 
     def updateNewPlatform(self):
         if self.speed != 0:#PAUSE CODE
@@ -218,7 +227,10 @@ class Main:
             self.screen.blit(platform.image, platform.getCordinates())
 
         for bumper in self.bumperGroup.sprites():
-            self.screen.blit(bumper.image, bumper.getCordinates())
+            if bumper.collidedWithBumper:
+                self.screen.blit(bumper.allImages[self.bumperAnim%6], bumper.getCordinates())
+            else:
+                self.screen.blit(bumper.allImages[0], bumper.getCordinates())
             
         if self.onPause :#PAUSE CODE
             self.screen.blit(self.imagePauseBack, (0, 0))#PAUSE CODE
@@ -251,6 +263,8 @@ class Main:
                 print(self.speed)
                 
             self.longJump()
+
+
                 
 
             if not self.ending:
