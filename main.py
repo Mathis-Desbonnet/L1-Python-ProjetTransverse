@@ -68,7 +68,13 @@ class Main:
 
         self.bumperAnim = 0
 
-        self.arrowImage = pygame.image.load("./assets/arrow_test.png").convert_alpha()
+        self.arrowImage = pygame.image.load("./assets/arrow.png").convert_alpha()
+        self.allArrowImages = [self.arrowImage.subsurface((0, 0, 384, 384)), self.arrowImage.subsurface(384, 0, 384, 384), self.arrowImage.subsurface(768, 0, 384, 384), self.arrowImage.subsurface(1152, 0, 384, 384), self.arrowImage.subsurface(1536, 0, 384, 384),
+                               self.arrowImage.subsurface(0, 384, 384, 384), self.arrowImage.subsurface(384, 384, 384, 384), self.arrowImage.subsurface(768, 384, 384, 384), self.arrowImage.subsurface(1152, 384, 384, 384), self.arrowImage.subsurface(1536, 384, 384, 384),
+                               self.arrowImage.subsurface(0, 768, 384, 384), self.arrowImage.subsurface(384, 768, 384, 384), self.arrowImage.subsurface(768, 768, 384, 384), self.arrowImage.subsurface(1152, 768, 384, 384), self.arrowImage.subsurface(1536, 768, 384, 384)]
+        self.arrowAnim = 0
+        self.arrowGoUp = True
+        self.angle = 20
 
     def fall(self):
             self.player.collisionBox.y += 5
@@ -116,14 +122,28 @@ class Main:
 
     def chooseAngle(self):
         if self.speed == 0 and self.longJumpState and not self.onPause:
-            self.screen.blit(self.arrowImage, (400, 400))
+            self.screen.blit(self.allArrowImages[self.arrowAnim], (400, 400))
+
+            if self.tick%10 == 0 and self.arrowGoUp:
+                self.arrowAnim += 1
+                self.angle += 5
+            elif self.tick%10 == 0 and not self.arrowGoUp:
+                self.arrowAnim -= 1
+                self.angle -= 5
+
+            if self.arrowAnim == 14:
+                self.arrowGoUp = False
+            elif self.arrowAnim == 0:
+                self.arrowGoUp = True
+
             if pygame.key.get_pressed()[pygame.K_SPACE]:
+                self.arrowAnim = 0
                 self.speed = self.saveSpeed
                 self.frontgroundSpeed = self.speed
                 self.fargroundSpeed = self.speed//5
 
-                self.currentSpeed = defineSpeedWithAngle(-45, self.speed)[1]
-                self.speed = defineSpeedWithAngle(-45, self.speed)[0]
+                self.currentSpeed = defineSpeedWithAngle(-self.angle, self.speed)[1]
+                self.speed = defineSpeedWithAngle(-self.angle, self.speed)[0]
                 self.frontgroundSpeed = self.speed
                 self.fargroundSpeed = self.speed//5
                     
@@ -131,6 +151,8 @@ class Main:
                     
                 self.player.setYPos(ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
                 self.player.collisionBox.y = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
+
+                self.angle = 20
 
     def longJump(self):
         if self.longJumpState and self.needToFall and not self.onPause and self.speed != 0:
@@ -252,8 +274,8 @@ class Main:
             self.screen.blit(self.imageTextPause, (350, 92))#PAUSE CODE
 
     def refreshScreen(self):
-        self.chooseAngle()
         self.draw()
+        self.chooseAngle()
         pygame.display.flip()
         
     def increaseSpeed(self):
