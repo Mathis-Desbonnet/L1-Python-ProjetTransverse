@@ -40,7 +40,7 @@ class Main:
         self.bumperGroup = pygame.sprite.Group()
 
         self.player = Player(200, 710)
-        self.thief = Thief(1000,710)
+        self.thief = Thief(1000, 744)
 
         self.tick = 0
 
@@ -64,6 +64,7 @@ class Main:
         self.isPausing = False #PAUSE CODE
         
         self.longJumpState = False
+        self.thiefLongJumpState = False
         
         self.saveSpeed = 0
 
@@ -121,6 +122,13 @@ class Main:
                     self.player.rect.y -= 100
                     self.player.collisionBox.y -= 100
 
+                if self.thief.collisionBox.colliderect(bumper.collision):
+
+                    self.thiefLongJumpState = True
+
+                    self.thief.rect.y -= 100
+                    self.thief.collisionBox.y -=100
+
     def chooseAngle(self):
         if self.speed == 0 and self.longJumpState and not self.onPause:
             self.screen.blit(self.allArrowImages[self.arrowAnim], (400, 400))
@@ -165,6 +173,21 @@ class Main:
         elif self.longJumpState and not self.onPause and self.speed != 0:
                 self.player.setYPos(710)
                 self.player.collisionBox.y = 710
+                self.currentSpeed = 0
+                self.speed = 10
+                self.longJumpState = False
+
+    def thiefLongJump(self):
+        if self.thiefLongJumpState and not self.onPause:
+            print("coucou")
+            self.thief.setYPos(ySerieBasicJump(5, self.thief.rect.y, self.currentSpeed, self.speed/20)[0])
+            self.thief.collisionBox.y = ySerieBasicJump(5, self.thief.rect.y, self.currentSpeed, self.speed/20)[0]
+            self.currentSpeed = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
+            if self.bumperAnim < 6:
+                self.bumperAnim += 1
+        elif self.longJumpState and not self.onPause and self.speed != 0:
+                self.thief.setYPos(710)
+                self.thief.collisionBox.y = 710
                 self.currentSpeed = 0
                 self.speed = 10
                 self.longJumpState = False
