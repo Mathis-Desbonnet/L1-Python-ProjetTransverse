@@ -6,7 +6,7 @@ from smallJump import SmallJump
 from longJump import LongJump
 from bumper import Bumper
 from fonctionTrajectoireY import ySerieBasicJump, defineSpeedWithAngle
-
+from thief import Thief
 
 class Main:
     def __init__(self) -> None:
@@ -40,6 +40,7 @@ class Main:
         self.bumperGroup = pygame.sprite.Group()
 
         self.player = Player(200, 710)
+        self.thief = Thief(1000,710)
 
         self.tick = 0
 
@@ -254,7 +255,7 @@ class Main:
             self.screen.blit(self.player.images[self.anim%4], self.player.getCoordinates())
         if self.tick % (10-(self.speed//5)) == 0 and self.speed != 0 and not self.onPause:
             self.anim += 1
-
+        self.screen.blit(self.thief.image[0], self.thief.getCoordinates())
         for platform in self.platformGroup.sprites():
             self.screen.blit(platform.image, platform.getCordinates())
 
