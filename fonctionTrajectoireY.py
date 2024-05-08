@@ -7,7 +7,7 @@ def ySerieBasicJump(g: float, y: int, initialSpeed: int, timeDelta: int) -> tupl
     if timeDelta < 0.5:
         timeDelta = 0.5
     newSpeed = int(g * timeDelta + initialSpeed)
-    y += int(-(1/2) * g * timeDelta + initialSpeed * timeDelta)
+    y += int(-(1/2) * g * timeDelta * timeDelta + initialSpeed * timeDelta)
     return y, newSpeed
 
 def defineSpeedWithAngle(angle: int, platformSpeed: int) -> tuple:
