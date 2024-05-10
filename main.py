@@ -94,13 +94,19 @@ class Main:
                 self.ending = True
             self.player.collisionBox.y = self.player.rect.y
 
-    def ThiefSmallJump(self):
+    def ThiefFall(self):
         self.thief.collisionBox.y += 5
         self.thiefNeedToFall = True
         for platform in self.platformGroup.sprites():
             for collision in platform.allCollision:
                 if self.thief.collisionBox.colliderect(collision):
                     self.thiefNeedToFall = False
+
+    def ThiefSmallJump(self):
+        if self.thiefNeedToFall == True and not self.thiefisJumping and not self.thieflongJumpState:
+            self.thiefisJumping= True
+            self.thiefCurrentSpeed = -50
+            self.thieffallingPosition()
 
 
     def platformMovement(self):
@@ -195,15 +201,11 @@ class Main:
         if  self.thieflongJumpState and not self.onPause:
             self.thiefCurrentSpeed = defineSpeedWithAngle(-3, self.thiefSpeed)[1]
             self.thiefSpeed = defineSpeedWithAngle(-3, self.thiefSpeed)[0]
-            print(self.thiefSpeed, self.thiefCurrentSpeed)
             self.thief.setYPos(ySerieBasicJump(9, self.thief.rect.y, self.thiefCurrentSpeed, self.thiefSpeed / 20)[0])
             if self.thieflongJumpState and not self.onPause:
                 self.thiefCurrentSpeed = ySerieBasicJump(9, self.thief.rect.y, self.thiefCurrentSpeed, self.thiefSpeed/20)[1]
                 if self.thiefNeedToFall:
                     self.thieffallingPosition()
-
-
-
 
 
     def createNewPlatform(self, delta):
