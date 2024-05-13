@@ -157,6 +157,3 @@ class goodEndMenu:
             self.isKeySpacePressed()
 
             self.clock.tick(60)
-
-
-goodEndMenu().run()
