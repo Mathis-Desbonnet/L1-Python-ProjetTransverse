@@ -1,7 +1,10 @@
 import pygame
+from pygame import mixer
 
 class mainMenu:
     def __init__(self) -> None:
+        mixer.init()
+        
         self.screen = pygame.display.set_mode((1920, 1080))
         self.running = True
         self.imageLaunch = pygame.image.load("./assets/button_play_0.png").convert_alpha()
@@ -17,6 +20,8 @@ class mainMenu:
         self.imagefrontground1 = pygame.image.load("./assets/frontground_spr1.png").convert_alpha()
         self.imagefrontground2 = pygame.image.load("./assets/frontground_spr2.png").convert_alpha()
         self.imageLogo = pygame.image.load("./assets/logo_trans.png").convert_alpha()
+        
+        self.music = mixer.music.load("./assets/boss.mp3")
 
         self.clock = pygame.time.Clock()
         self.tick = 0
@@ -50,6 +55,7 @@ class mainMenu:
         if keys[pygame.K_SPACE] :
             if not self.spaceIn :
                 if self.buttonNbr == 0 : #Launch
+                    mixer.music.fadeout(1)
                     from main import Main
                     self.running = False
                 else : self.running = False #Quit game
@@ -94,6 +100,7 @@ class mainMenu:
         pygame.display.flip()
 
     def run(self):
+        mixer.music.play(-1)
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

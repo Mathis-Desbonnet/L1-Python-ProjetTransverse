@@ -9,8 +9,12 @@ from fonctionTrajectoireY import ySerieBasicJump, defineSpeedWithAngle
 from thief import Thief
 from badEndMenu import badEndMenu
 from goodEndMenu import goodEndMenu
+
+from pygame import mixer
+
 class Main:
     def __init__(self) -> None:
+        mixer.init()
         self.screen = pygame.display.set_mode((1920, 1080))
         self.running = True
 
@@ -22,9 +26,9 @@ class Main:
 
         self.clock = pygame.time.Clock()
 
-        self.imageSmall = pygame.image.load("./assets/regular_jump.png").convert_alpha()
-        self.imagePlatform = pygame.image.load("./assets/roof_floor.png").convert_alpha()
-        self.imageBig = pygame.image.load("./assets/long_jump.png").convert_alpha()
+        self.imageSmall = [pygame.image.load("./assets/gap_2.png").convert_alpha(), pygame.image.load("./assets/gap_1.png").convert_alpha(), pygame.image.load("./assets/gap_3.png").convert_alpha()]
+        self.imagePlatform = [pygame.image.load("./assets/roof_1.png").convert_alpha(), pygame.image.load("./assets/roof_2.png").convert_alpha(), pygame.image.load("./assets/roof_3.png").convert_alpha(), pygame.image.load("./assets/roof_4.png").convert_alpha(), pygame.image.load("./assets/roof_5.png").convert_alpha()]
+        self.imageBig = [pygame.image.load("./assets/lj1.png").convert_alpha(), pygame.image.load("./assets/lj2.png").convert_alpha()]
         
         self.imageTextPause = pygame.image.load("./assets/text_pause.png").convert_alpha()#PAUSE CODE
         self.imageTextResume = pygame.image.load("./assets/text_resume.png").convert_alpha()#PAUSE CODE
@@ -33,10 +37,12 @@ class Main:
         self.imageQuit = pygame.image.load("./assets/button_quit_0.png").convert_alpha()#PAUSE CODE
 
         self.platformGroup = pygame.sprite.Group()
-        self.platformGroup.add(Platform(x=0, y=0, image=self.imagePlatform))
-        self.platformGroup.add(Platform(x=640, y=0, image=self.imagePlatform))
-        self.platformGroup.add(Platform(x=1280, y=0, image=self.imagePlatform))
-        self.platformGroup.add(Platform(x=1920, y=0, image=self.imagePlatform))
+        self.platformGroup.add(Platform(x=0, y=0, image=self.imagePlatform[random.randint(0, 4)]))
+        self.platformGroup.add(Platform(x=640, y=0, image=self.imagePlatform[random.randint(0, 4)]))
+        self.platformGroup.add(Platform(x=1280, y=0, image=self.imagePlatform[random.randint(0, 4)]))
+        self.platformGroup.add(Platform(x=1920, y=0, image=self.imagePlatform[random.randint(0, 4)]))
+        
+        self.music = mixer.music.load("./assets/boss2.mp3")
 
         self.bumperGroup = pygame.sprite.Group()
 
@@ -204,7 +210,7 @@ class Main:
 
     def longJump(self):
         if self.longJumpState and self.needToFall and not self.onPause and self.speed != 0 and self.player.rect.y < 800:
-            self.player.setYPos(ySerieBasicJump(5, self.player.rect.y, self.currentSpeed,self.speed/20)[0])
+            self.player.setYPos(ySerieBasicJump(5, self.player.rect.y, self.currentSpeed,self.speed/20)[0]) 
             self.player.collisionBox.y = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
             self.currentSpeed = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
             if self.bumperAnim < 6:
@@ -248,9 +254,9 @@ class Main:
 
     def createNewPlatform(self, delta):
         self.platfomType = [
-            Platform(x=1920-delta, y=0, image=self.imagePlatform),
-            SmallJump(x=1920-delta, y=0, image=self.imageSmall),
-            LongJump(x=1920-delta, y=0, image=self.imageBig),
+            Platform(x=1920-delta, y=0, image=self.imagePlatform[random.randint(0, 4)]),
+            SmallJump(x=1920-delta, y=0, image=self.imageSmall[random.randint(0, 2)]),
+            LongJump(x=1920-delta, y=0, image=self.imageBig[random.randint(0, 1)]),
         ]
         randomNumber = random.randint(0, 10)
         if randomNumber < 10:
@@ -299,6 +305,7 @@ class Main:
                 self.saveSpeed = self.speed
                 from menu import mainMenu #PAUSE CODE
                 self.running = False #PAUSE CODE
+                mixer.music.stop()
             else:
 
                 self.isJumping = True
@@ -373,6 +380,7 @@ class Main:
         pygame.display.flip()
 
     def run(self):
+        mixer.music.play(-1)
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -386,9 +394,13 @@ class Main:
 
             if self.goodEnd:
                 self.running = False
+                mixer.music.fadeout(1)
+                mixer.music.stop()
                 goodEndMenu().run()
             elif self.badEnd:
                 self.running = False
+                mixer.music.fadeout(1)
+                mixer.music.stop()
                 badEndMenu().run()
             elif not self.ending:
                 self.thiefLongJump()
