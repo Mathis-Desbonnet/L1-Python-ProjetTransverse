@@ -2,7 +2,7 @@ import pygame
 from random import randint
 
 
-class endMenu:
+class badEndMenu:
     def __init__(self) -> None:
 
         pygame.font.init()
@@ -145,3 +145,5 @@ class endMenu:
             self.isKeySpacePressed()
 
             self.clock.tick(60)
+
+

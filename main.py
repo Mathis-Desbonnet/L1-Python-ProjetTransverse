@@ -7,7 +7,8 @@ from longJump import LongJump
 from bumper import Bumper
 from fonctionTrajectoireY import ySerieBasicJump, defineSpeedWithAngle
 from thief import Thief
-from endMenu import endMenu
+from badEndMenu import badEndMenu
+from goodEndMenu import goodEndMenu
 class Main:
     def __init__(self) -> None:
         self.screen = pygame.display.set_mode((1920, 1080))
@@ -386,9 +387,10 @@ class Main:
 
             if self.goodEnd:
                 self.running = False
+                goodEndMenu().run()
             elif self.badEnd:
                 self.running = False
-                endMenu().run()
+                badEndMenu().run()
             elif not self.ending:
                 self.thiefLongJump()
                 self.refreshScreen()
