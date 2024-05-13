@@ -10,6 +10,9 @@ class SmallJump(pygame.sprite.Sprite):
         self.collision = self.image.get_rect()
         self.collision.x = x
         self.collision.y = y
+        self.jumpSurfaceCollision = pygame.rect.Rect(230, 282, 14, 5000)
+        self.jumpSurfaceCollision.x = x + 230
+        self.jumpSurfaceCollision.y = y + 282
         
         self.allCollision = [
             pygame.rect.Rect(x, 848, 247, 234),
