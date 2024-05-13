@@ -51,6 +51,10 @@ class goodEndMenu:
         self.imagefrontground2 = pygame.image.load("./assets/frontground_spr2.png").convert_alpha()
 
         self.imagePauseBack = pygame.image.load("./assets/pause_back.png").convert_alpha()
+        
+        self.pressSpace = pygame.image.load("./assets/PressSpace.png").convert_alpha()
+        self.pressSpaceImages = [self.pressSpace.subsurface(0, 0, 440, 120), self.pressSpace.subsurface(440, 0, 440, 120), self.pressSpace.subsurface(880, 0, 440, 120), self.pressSpace.subsurface(1320, 0, 440, 120), self.pressSpace.subsurface(1760, 0, 440, 120)]
+        self.pressSpaceIndex = 0
 
         self.clock = pygame.time.Clock()
         self.tick = 0
@@ -116,7 +120,6 @@ class goodEndMenu:
         self.screen.blit(self.imagefrontground1, (self.frontgroundX1, 0))
         self.screen.blit(self.imagefrontground2, (self.frontgroundX2, 0))
         self.screen.blit(self.imagePauseBack, (0, 0))
-        self.screen.blit(chosen_img, (700, 56))
 
 
         if self.fargroundX1 <= -3072: self.fargroundX1 = 3072
@@ -131,16 +134,21 @@ class goodEndMenu:
         self.frontgroundX1 = (self.frontgroundX1 - self.frontgroundSpeed)
         self.frontgroundX2 = (self.frontgroundX2 - self.frontgroundSpeed)
         if self.opened:
+            self.screen.blit(chosen_img, (700, 141))
             if self.buttonNbr == 0:
-                self.screen.blit(self.imageLaunch2, (600, 506))
+                self.screen.blit(self.imageLaunch2, (600, 591))
 
-                self.screen.blit(self.imageQuit, (600, 656))
+                self.screen.blit(self.imageQuit, (600, 741))
             else:
-                self.screen.blit(self.imageLaunch, (600, 506))
+                self.screen.blit(self.imageLaunch, (600, 591))
 
-                self.screen.blit(self.imageQuit2, (600, 656))
+                self.screen.blit(self.imageQuit2, (600, 741))
         else:
-            self.screen.blit(self.text,  (386, 656))
+            self.screen.blit(chosen_img, (700, 200))
+           # self.screen.blit(self.text,  (386, 656))
+            self.screen.blit(self.pressSpaceImages[self.pressSpaceIndex%5], (730, 656))
+            if self.tick %10 == 0:
+                self.pressSpaceIndex += 1
     def refreshScreen(self):
         self.draw()
         pygame.display.flip()
@@ -157,3 +165,5 @@ class goodEndMenu:
             self.isKeySpacePressed()
 
             self.clock.tick(60)
+            
+goodEndMenu().run()      
