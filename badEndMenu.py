@@ -85,8 +85,6 @@ class badEndMenu:
                 if self.buttonNbr == 0:  # Launch
                     from main import Main
                     self.running = False
-                elif self.buttonNbr == 1:  # Story
-                    print("Il y entre un poulet et ressort une tourte")
                 else:
                     self.running = False  # Quit game
 
@@ -150,3 +148,4 @@ class badEndMenu:
             self.clock.tick(60)
 
 
+badEndMenu().run()
