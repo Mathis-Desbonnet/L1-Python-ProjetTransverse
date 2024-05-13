@@ -70,7 +70,6 @@ class badEndMenu:
             if not self.downIn and self.buttonNbr < 2:
                 self.buttonNbr += 1
                 self.downIn = True
-                print(self.buttonNbr)
         else:
             self.downIn = False
 
@@ -78,7 +77,6 @@ class badEndMenu:
             if not self.upIn and self.buttonNbr > 0:
                 self.buttonNbr -= 1
                 self.upIn = True
-                print(self.buttonNbr)
         else:
             self.upIn = False
 

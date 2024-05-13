@@ -39,14 +39,12 @@ class mainMenu:
             if not self.downIn and self.buttonNbr < 2:
                 self.buttonNbr += 1
                 self.downIn = True
-                print(self.buttonNbr)
         else : self.downIn = False
 
         if keys[pygame.K_UP]:
             if not self.upIn and self.buttonNbr > 0:
                 self.buttonNbr -= 1
                 self.upIn = True
-                print(self.buttonNbr)
         else : self.upIn = False
 
         if keys[pygame.K_SPACE] :
@@ -54,8 +52,6 @@ class mainMenu:
                 if self.buttonNbr == 0 : #Launch
                     from main import Main
                     self.running = False
-                elif self.buttonNbr == 1 : #Story
-                    print("Il y entre un poulet et ressort une tourte")
                 else : self.running = False #Quit game
 
     def draw(self):
