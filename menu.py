@@ -64,7 +64,7 @@ class mainMenu:
         self.screen.blit(self.imagefarground2, (self.fargroundX2, 0))
         self.screen.blit(self.imagefrontground1, (self.frontgroundX1, 0))
         self.screen.blit(self.imagefrontground2, (self.frontgroundX2, 0))
-        self.screen.blit(self.imageLogo, (700, -25))
+        self.screen.blit(self.imageLogo, (700, -25))  
 
 
         if self.fargroundX1 <= -3072 : self.fargroundX1 = 3072

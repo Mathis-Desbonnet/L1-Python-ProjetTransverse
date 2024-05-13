@@ -47,7 +47,6 @@ class Main:
 
         self.speed = 10
         self.thiefSpeed = 10
-        self.maxSpeed = 40
         self.fargroundSpeed = 2
         self.frontgroundSpeed = 10
         self.fargroundX = 0
@@ -114,7 +113,6 @@ class Main:
 
     def ThiefSmallJump(self):
         if self.thiefisJumping and not self.onPause:
-            print(self.thiefTickSmallJump)
             self.thief.setYPos(self.thiefPosListSmallJump[self.thiefTickSmallJump])
             self.thief.collisionBox.y = self.thiefPosListSmallJump[self.thiefTickSmallJump]
             self.thiefTickSmallJump += 3
@@ -169,7 +167,6 @@ class Main:
         for platform in self.platformGroup.sprites():
             if platform.name == "small" and not self.thiefisJumping and not self.thiefLongJumpState:
                 if self.thief.collisionBox.colliderect(platform.jumpSurfaceCollision):
-                    print("coucou")
                     self.thiefTickSmallJump = 0
                     self.thiefisJumping = True
 
@@ -217,6 +214,8 @@ class Main:
                 self.player.collisionBox.y = 710
                 self.currentSpeed = 0
                 self.speed = 10
+                self.fargroundSpeed = 2
+                self.frontgroundSpeed = 10
                 self.longJumpState = False
         elif self.longJumpState and not self.onPause and self.player.rect.y > 800:
             self.longJumpState = False
@@ -338,7 +337,7 @@ class Main:
             self.screen.blit(self.player.images[0], self.player.getCoordinates())
         else:
             self.screen.blit(self.player.images[self.anim%4], self.player.getCoordinates())
-        if self.tick % (10-(self.speed//5)) and self.speed != 0 and not self.onPause:
+        if self.tick % (10-(self.speed//5)) == 0 and self.speed != 0 and not self.onPause:
             self.anim += 1
 
         if self.thiefisJumping or self.thiefLongJumpState:
@@ -346,7 +345,7 @@ class Main:
         else:
             self.screen.blit(self.thief.image[self.thiefAnim%4], self.thief.getCoordinates())
 
-        if self.tick % 5 and self.speed != 0:
+        if self.tick % 5 == 0 and self.speed != 0:
             self.thiefAnim += 1
 
         for platform in self.platformGroup.sprites():
