@@ -46,7 +46,9 @@ class badEndMenu:
 
         self.imagefrontground1 = pygame.image.load("./assets/frontground_spr1.png").convert_alpha()
         self.imagefrontground2 = pygame.image.load("./assets/frontground_spr2.png").convert_alpha()
-
+        
+        self.imageYOULOSE = pygame.image.load("./assets/noMilkToday.png").convert_alpha()
+        self.imageYOULOSE = pygame.transform.scale(self.imageYOULOSE, (400, 400))
 
         self.clock = pygame.time.Clock()
         self.tick = 0
@@ -106,7 +108,8 @@ class badEndMenu:
         self.screen.blit(self.imagefrontground1, (self.frontgroundX1, 0))
         self.screen.blit(self.imagefrontground2, (self.frontgroundX2, 0))
         self.screen.blit(self.imagePauseBack, (0, 0))
-        self.screen.blit(self.text, (500, 250))
+        #self.screen.blit(self.text, (500, 250))
+        self.screen.blit(self.imageYOULOSE, (765, 185))
 
 
         if self.fargroundX1 <= -3072: self.fargroundX1 = 3072
@@ -122,13 +125,13 @@ class badEndMenu:
         self.frontgroundX2 = (self.frontgroundX2 - self.frontgroundSpeed)
 
         if self.buttonNbr == 0:
-            self.screen.blit(self.imageLaunch2, (600, 506))
+            self.screen.blit(self.imageLaunch2, (600, 591))
 
-            self.screen.blit(self.imageQuit, (600, 656))
+            self.screen.blit(self.imageQuit, (600, 741))
         else:
-            self.screen.blit(self.imageLaunch, (600, 506))
+            self.screen.blit(self.imageLaunch, (600, 591))
 
-            self.screen.blit(self.imageQuit2, (600, 656))
+            self.screen.blit(self.imageQuit2, (600, 741))
 
     def refreshScreen(self):
         self.draw()

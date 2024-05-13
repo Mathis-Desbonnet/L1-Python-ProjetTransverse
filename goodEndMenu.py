@@ -27,7 +27,7 @@ class goodEndMenu:
             "./assets/case_opening_4.png",
             "./assets/case_opening_5.png"
         )
-        self.font = pygame.font.SysFont('Comic Sans MS', 100)
+        self.font = pygame.font.Font("./assets/VCR_OSD_MONO_1.001.ttf", 70)
         self.text = self.font.render('Press SPACE to open the case', False, (255, 215, 0))
 
         self.screen = pygame.display.set_mode((1920, 1080))
@@ -140,7 +140,7 @@ class goodEndMenu:
 
                 self.screen.blit(self.imageQuit2, (600, 656))
         else:
-            self.screen.blit(self.text,  (500, 656))
+            self.screen.blit(self.text,  (386, 656))
     def refreshScreen(self):
         self.draw()
         pygame.display.flip()
