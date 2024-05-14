@@ -6,7 +6,7 @@ class Thief(pygame.sprite.Sprite):
         super().__init__()
         self.rect = pygame.rect.Rect(x, y, 50, 140)
 
-        self.collisionBox = pygame.rect.Rect(x, y, 50, 140)
+        self.collisionBox = pygame.rect.Rect(x, y, 50, 100)
 
         firstFrame = pygame.image.load("./assets/funkyThief_sheet.png").convert_alpha().subsurface((0, 0, 105, 105))
         secondFrame = pygame.image.load("./assets/funkyThief_sheet.png").convert_alpha().subsurface((105, 0, 105, 105))

@@ -47,12 +47,12 @@ class Main:
         self.bumperGroup = pygame.sprite.Group()
 
         self.player = Player(200, 710)
-        self.thief = Thief(1000, 744)
+        self.thief = Thief(1000, 740)
 
         self.tick = 0
 
         self.speed = 10
-        self.thiefSpeed = 10
+        self.thiefSpeed = 8
         self.fargroundSpeed = 2
         self.frontgroundSpeed = 10
         self.fargroundX = 0
@@ -118,14 +118,16 @@ class Main:
         self.thief.collisionBox.y = self.thief.rect.y
 
     def ThiefSmallJump(self):
-        if self.thiefisJumping and not self.onPause:
-            self.thief.setYPos(self.thiefPosListSmallJump[self.thiefTickSmallJump])
-            self.thief.collisionBox.y = self.thiefPosListSmallJump[self.thiefTickSmallJump]
-            self.thiefTickSmallJump += 3
-            if self.thiefTickSmallJump >= len(self.thiefPosListSmallJump) - 2:
+        if self.thiefisJumping and not self.onPause and not self.thiefLongJumpState:
+            if self.thiefNeedToFall:
+                self.thieffallingPosition()
+                self.thiefCurrentSpeed = ySerieBasicJump(self.g, self.thief.rect.y, self.thiefCurrentSpeed, self.thiefSpeed / 20)[1]
+            else:
+                self.thief.setYPos(740)
+                self.thief.collisionBox.y = 740
+                self.thiefCurrentSpeed = 0
+                self.thiefSpeed = 8
                 self.thiefisJumping = False
-                self.thief.setYPos(744)
-                self.thief.collisionBox.y = 744
         else:
             self.thiefTickSmallJump = 0
 
@@ -167,7 +169,9 @@ class Main:
                     self.thief.rect.y -= 100
                     self.thief.collisionBox.y -=100
                     self.thiefCurrentSpeed = defineSpeedWithAngle(-45, self.thiefSpeed)[1]
-                    self.thiefSpeed = defineSpeedWithAngle(45, self.thiefSpeed)[0]
+                    self.thiefSpeed = defineSpeedWithAngle(-45, self.thiefSpeed)[0]
+                    self.thief.setYPos(ySerieBasicJump(self.g-4.5, self.thief.rect.y, self.thiefCurrentSpeed, self.thiefSpeed / 20)[0])
+                    self.thief.collisionBox.y = ySerieBasicJump(self.g-4.5, self.thief.rect.y, self.thiefCurrentSpeed, self.thiefSpeed / 20)[0]
 
     def HoleCollision(self):
         for platform in self.platformGroup.sprites():
@@ -175,6 +179,8 @@ class Main:
                 if self.thief.collisionBox.colliderect(platform.jumpSurfaceCollision):
                     self.thiefTickSmallJump = 0
                     self.thiefisJumping = True
+                    self.thiefCurrentSpeed = -50
+                    self.thieffallingPosition()
 
     def chooseAngle(self):
         if self.speed == 0 and self.longJumpState and not self.onPause:
@@ -198,6 +204,7 @@ class Main:
                 self.frontgroundSpeed = self.speed
                 self.fargroundSpeed = self.speed//5
 
+
                 self.currentSpeed = defineSpeedWithAngle(-self.angle, self.speed)[1]
                 self.speed = defineSpeedWithAngle(-self.angle, self.speed)[0]
                 self.frontgroundSpeed = self.speed
@@ -210,9 +217,9 @@ class Main:
 
     def longJump(self):
         if self.longJumpState and self.needToFall and not self.onPause and self.speed != 0 and self.player.rect.y < 800:
-            self.player.setYPos(ySerieBasicJump(5, self.player.rect.y, self.currentSpeed,self.speed/20)[0]) 
-            self.player.collisionBox.y = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
-            self.currentSpeed = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
+            self.player.setYPos(ySerieBasicJump(self.g-4.5, self.player.rect.y, self.currentSpeed,self.speed/20)[0]) 
+            self.player.collisionBox.y = ySerieBasicJump(self.g-4.5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
+            self.currentSpeed = ySerieBasicJump(self.g-4.5, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
             if self.bumperAnim < 6:
                 self.bumperAnim += 1
         elif self.longJumpState and not self.onPause and self.speed != 0:
@@ -232,15 +239,22 @@ class Main:
 
     def thiefLongJump(self):
         if self.thiefLongJumpState and not self.onPause and self.speed != 0:
-            self.thief.setYPos(self.thiefPosListLongJump[self.thiefTickLongJump])
-            self.thief.collisionBox.y = self.thiefPosListLongJump[self.thiefTickLongJump]
-            if self.tick % 2 == 0:
-                self.thiefTickLongJump += 1
-            if self.thiefTickLongJump == len(self.thiefPosListLongJump):
+            self.thief.setYPos(ySerieBasicJump(self.g-4.5, self.thief.rect.y, self.thiefCurrentSpeed, self.thiefSpeed / 20)[0])
+            self.thief.collisionBox.y = ySerieBasicJump(self.g-4.5, self.thief.rect.y, self.thiefCurrentSpeed, self.thiefSpeed / 20)[0]
+            self.thiefCurrentSpeed = ySerieBasicJump(self.g-4.5, self.thief.rect.y, self.thiefCurrentSpeed, self.thiefSpeed / 20)[1]
+            if (ySerieBasicJump(self.g-4.5, self.thief.rect.y, self.thiefCurrentSpeed, self.thiefSpeed / 20)[0] > 740):
+                self.thief.rect.y = 740
+                self.thief.collisionBox.y = 740
                 self.thiefLongJumpState = False
+            # self.thief.setYPos(self.thiefPosListLongJump[self.thiefTickLongJump])
+            # self.thief.collisionBox.y = self.thiefPosListLongJump[self.thiefTickLongJump]
+            # if self.tick % 2 == 0:
+            #     self.thiefTickLongJump += 1
+            # if self.thiefTickLongJump == len(self.thiefPosListLongJump):
+            #     self.thiefLongJumpState = False
         elif self.speed != 0:
             self.thiefTickLongJump = 0
-
+            self.thiefLongJumpState = False
 
     def updateThiefPosition(self):
         if self.tick % 5 == 0 and self.speed != 0 and not self.ending:
@@ -265,7 +279,6 @@ class Main:
             self.platformGroup.add(self.platfomType[2])
         if self.platformGroup.sprites()[-1].name == "long":
             self.bumperGroup.add(Bumper(x=1920, y=720))
-
 
     def updateNewPlatform(self):
         if self.speed != 0:#PAUSE CODE
@@ -338,7 +351,7 @@ class Main:
             self.fargroundX = (self.fargroundX-self.fargroundSpeed)%-3072
             self.frontgroundX = (self.frontgroundX-self.frontgroundSpeed)%-3072
 
-        #pygame.draw.rect(self.screen, (255, 0, 0), self.thief.collisionBox)
+        pygame.draw.rect(self.screen, (255, 0, 0), self.thief.collisionBox)
 
         if self.isJumping:
             self.screen.blit(self.player.images[0], self.player.getCoordinates())
@@ -403,7 +416,6 @@ class Main:
                 mixer.music.stop()
                 badEndMenu().run()
             elif not self.ending:
-                self.thiefLongJump()
                 self.refreshScreen()
                 self.updateNewPlatform()
                 self.platformMovement()
