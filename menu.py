@@ -1,5 +1,6 @@
 import pygame
 from pygame import mixer
+from main import Main
 
 class mainMenu:
     def __init__(self) -> None:
@@ -56,7 +57,7 @@ class mainMenu:
             if not self.spaceIn :
                 if self.buttonNbr == 0 : #Launch
                     mixer.music.fadeout(1)
-                    from main import Main
+                    Main().run()
                     self.running = False
                 else : self.running = False #Quit game
 
@@ -112,6 +113,3 @@ class mainMenu:
             self.isKeySpacePressed()
 
             self.clock.tick(60)
-
-
-mainMenu().run()

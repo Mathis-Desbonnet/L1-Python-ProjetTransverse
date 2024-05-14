@@ -428,5 +428,3 @@ class Main:
                 self.fallingPosition()
 
             self.clock.tick(60)
-
-Main().run()

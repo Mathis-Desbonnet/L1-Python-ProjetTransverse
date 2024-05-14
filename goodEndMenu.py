@@ -91,6 +91,7 @@ class goodEndMenu:
                 if not self.spaceIn:
                     if self.buttonNbr == 0:  # Launch
                         from main import Main
+                        Main().run()
                         self.running = False
                     else:
                         self.running = False  # Quit game
