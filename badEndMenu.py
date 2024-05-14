@@ -1,8 +1,11 @@
 import pygame
 from random import randint
+from pygame import mixer
 
 class badEndMenu:
     def __init__(self) -> None:
+
+        mixer.init()
 
         pygame.font.init()
         self.thunder_position_pool = (
@@ -11,6 +14,8 @@ class badEndMenu:
         self.thunder_position_choice = 0
         self.thunder_clock = 0
         self.current_thunder = 0
+
+        mixer.music.load("./assets/deadSound.mp3")
 
         self.idle_imgs = (
             "./assets/thunder_0.png",
@@ -48,6 +53,11 @@ class badEndMenu:
         
         self.imageYOULOSE = pygame.image.load("./assets/noMilkToday.png").convert_alpha()
         self.imageYOULOSE = pygame.transform.scale(self.imageYOULOSE, (400, 400))
+
+        self.opacity = 0
+
+        self.redImage = pygame.image.load("./assets/deadFrontRedImage.png").convert_alpha()
+        self.redImage.set_alpha(0)
 
         self.clock = pygame.time.Clock()
         self.tick = 0
@@ -131,11 +141,18 @@ class badEndMenu:
 
             self.screen.blit(self.imageQuit2, (600, 741))
 
+        if (self.tick % 10 == 0):
+            self.opacity += 1
+            self.redImage.set_alpha(self.opacity)
+
+        self.screen.blit(self.redImage, (0, 0))
+
     def refreshScreen(self):
         self.draw()
         pygame.display.flip()
 
     def run(self):
+        mixer.music.play(-1)
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

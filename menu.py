@@ -23,6 +23,7 @@ class mainMenu:
         self.imageLogo = pygame.image.load("./assets/logo_trans.png").convert_alpha()
         
         self.music = mixer.music.load("./assets/boss.mp3")
+        self.launchGameSound = mixer.Sound("./assets/startButton_snd.mp3")
 
         self.clock = pygame.time.Clock()
         self.tick = 0
@@ -57,6 +58,7 @@ class mainMenu:
             if not self.spaceIn :
                 if self.buttonNbr == 0 : #Launch
                     mixer.music.fadeout(1)
+                    self.launchGameSound.play()
                     Main().run()
                     self.running = False
                 else : self.running = False #Quit game

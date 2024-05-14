@@ -43,6 +43,7 @@ class Main:
         self.platformGroup.add(Platform(x=1920, y=0, image=self.imagePlatform[random.randint(0, 4)]))
         
         self.music = mixer.music.load("./assets/boss2.mp3")
+        mixer.music.set_volume(0.7)
 
         self.bumperGroup = pygame.sprite.Group()
 
