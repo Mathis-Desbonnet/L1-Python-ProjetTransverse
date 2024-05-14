@@ -1,6 +1,7 @@
 import pygame
 from pygame import mixer
 from main import Main
+from creditMenu import creditMenu
 
 class mainMenu:
     def __init__(self) -> None:
@@ -61,6 +62,8 @@ class mainMenu:
                     self.launchGameSound.play()
                     Main().run()
                     self.running = False
+                elif self.buttonNbr == 1:
+                     creditMenu().run() #Story
                 else : self.running = False #Quit game
 
     def draw(self):
