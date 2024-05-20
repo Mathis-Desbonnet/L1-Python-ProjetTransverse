@@ -1,8 +1,6 @@
 import pygame
 from pygame import mixer
 from main import Main
-from creditMenu import creditMenu
-
 class mainMenu:
     def __init__(self) -> None:
         mixer.init()
@@ -11,8 +9,8 @@ class mainMenu:
         self.running = True
         self.imageLaunch = pygame.image.load("./assets/button_play_0.png").convert_alpha()
         self.imageLaunch2 = pygame.image.load("./assets/button_play_1.png").convert_alpha()
-        self.imageStory = pygame.image.load("./assets/button_story_0.png").convert_alpha()
-        self.imageStory2 = pygame.image.load("./assets/button_story_1.png").convert_alpha()
+        self.imageArcade = pygame.image.load("./assets/arcade_button_0.png").convert_alpha()
+        self.imageArcade2 = pygame.image.load("./assets/arcade_button_1.png").convert_alpha()
         self.imageQuit = pygame.image.load("./assets/button_quit_0.png").convert_alpha()
         self.imageQuit2 = pygame.image.load("./assets/button_quit_1.png").convert_alpha()
 
@@ -22,6 +20,7 @@ class mainMenu:
         self.imagefrontground1 = pygame.image.load("./assets/frontground_spr1.png").convert_alpha()
         self.imagefrontground2 = pygame.image.load("./assets/frontground_spr2.png").convert_alpha()
         self.imageLogo = pygame.image.load("./assets/logo_trans.png").convert_alpha()
+        self.imageCredit = pygame.image.load("./assets/credits.png").convert_alpha()
         
         self.music = mixer.music.load("./assets/boss.mp3")
         self.launchGameSound = mixer.Sound("./assets/startButton_snd.mp3")
@@ -60,10 +59,10 @@ class mainMenu:
                 if self.buttonNbr == 0 : #Launch
                     mixer.music.fadeout(1)
                     self.launchGameSound.play()
-                    Main().run()
                     self.running = False
+                    Main().run()
                 elif self.buttonNbr == 1:
-                     creditMenu().run() #Story
+                     pass
                 else : self.running = False #Quit game
 
     def draw(self):
@@ -72,7 +71,8 @@ class mainMenu:
         self.screen.blit(self.imagefarground2, (self.fargroundX2, 0))
         self.screen.blit(self.imagefrontground1, (self.frontgroundX1, 0))
         self.screen.blit(self.imagefrontground2, (self.frontgroundX2, 0))
-        self.screen.blit(self.imageLogo, (700, -25))  
+        self.screen.blit(self.imageLogo, (700, -25)) 
+        self.screen.blit(self.imageCredit, (0, 780)) 
 
 
         if self.fargroundX1 <= -3072 : self.fargroundX1 = 3072
@@ -89,15 +89,15 @@ class mainMenu:
 
         if self.buttonNbr == 0 :
             self.screen.blit(self.imageLaunch2, (600, 506))
-            self.screen.blit(self.imageStory, (600, 656))
+            self.screen.blit(self.imageArcade, (600, 656))
             self.screen.blit(self.imageQuit, (600, 806))
         elif self.buttonNbr == 1 :
             self.screen.blit(self.imageLaunch, (600, 506))
-            self.screen.blit(self.imageStory2, (600, 656))
+            self.screen.blit(self.imageArcade2, (600, 656))
             self.screen.blit(self.imageQuit, (600, 806))
         else :
             self.screen.blit(self.imageLaunch, (600, 506))
-            self.screen.blit(self.imageStory, (600, 656))
+            self.screen.blit(self.imageArcade, (600, 656))
             self.screen.blit(self.imageQuit2, (600, 806))
 
 

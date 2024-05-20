@@ -20,8 +20,8 @@ class Main:
 
         self.imageBack = pygame.image.load("./assets/sky_background.png").convert_alpha()
         self.imagefarground1 = pygame.image.load("./assets/farground_spr1.png").convert_alpha()
-        self.imagefarground2 = pygame.image.load("./assets/farground_spr1.png").convert_alpha()
-        self.imagefrontground1 = pygame.image.load("./assets/frontground_spr2.png").convert_alpha()
+        self.imagefarground2 = pygame.image.load("./assets/farground_spr2.png").convert_alpha()
+        self.imagefrontground1 = pygame.image.load("./assets/frontground_spr1.png").convert_alpha()
         self.imagefrontground2 = pygame.image.load("./assets/frontground_spr2.png").convert_alpha()
 
         self.clock = pygame.time.Clock()
@@ -56,11 +56,15 @@ class Main:
         self.thiefSpeed = 8
         self.fargroundSpeed = 2
         self.frontgroundSpeed = 10
-        self.fargroundX = 0
-        self.frontgroundX = 0
+        self.fargroundX1 = 0
+        self.fargroundX2 = 3072
+        self.frontgroundX1 = 0
+        self.frontgroundX2 = 3072
         self.anim = 0
 
-        self.g = 9.81
+        self.playerSaveYPosIfTooBig = 0
+
+        self.g = 6
         self.currentSpeed = 0
         self.thiefCurrentSpeed = 0
         self.nextPlatformHeight = 768
@@ -101,7 +105,7 @@ class Main:
             self.needToFall = True
             for platform in self.platformGroup.sprites():
                 for collision in platform.allCollision:
-                    if self.player.collisionBox.colliderect(collision):
+                    if self.player.collisionBox.colliderect(collision) and self.player.collisionBox.y > 0:
                         self.needToFall = False
             if self.needToFall and self.isJumping == False and self.longJumpState == False:
                 self.currentSpeed = 50
@@ -213,14 +217,20 @@ class Main:
                                         
                 self.player.setYPos(ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0])
                 self.player.collisionBox.y = ySerieBasicJump(5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
+                self.playerSaveYPosIfTooBig = self.player.rect.y
 
                 self.angle = 20
 
     def longJump(self):
         if self.longJumpState and self.needToFall and not self.onPause and self.speed != 0 and self.player.rect.y < 800:
-            self.player.setYPos(ySerieBasicJump(self.g-4.5, self.player.rect.y, self.currentSpeed,self.speed/20)[0]) 
-            self.player.collisionBox.y = ySerieBasicJump(self.g-4.5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
-            self.currentSpeed = ySerieBasicJump(self.g-4.5, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
+            if (ySerieBasicJump(self.g-4.5, self.playerSaveYPosIfTooBig, self.currentSpeed,self.speed/20)[0] > -650):
+                self.player.setYPos(ySerieBasicJump(self.g-4.5, self.player.rect.y, self.currentSpeed,self.speed/20)[0]) 
+                self.player.collisionBox.y = ySerieBasicJump(self.g-4.5, self.player.rect.y, self.currentSpeed, self.speed/20)[0]
+                self.currentSpeed = ySerieBasicJump(self.g-4.5, self.player.rect.y, self.currentSpeed, self.speed/20)[1]
+                self.playerSaveYPosIfTooBig = self.player.rect.y
+            else:
+                self.playerSaveYPosIfTooBig = -200
+                self.playerSaveYPosIfTooBig = ySerieBasicJump(self.g, self.playerSaveYPosIfTooBig, self.currentSpeed,self.speed/20)[0] 
             if self.bumperAnim < 6:
                 self.bumperAnim += 1
         elif self.longJumpState and not self.onPause and self.speed != 0:
@@ -343,16 +353,24 @@ class Main:
 
     def draw(self):
         self.screen.blit(self.imageBack, (0, 0))
-        self.screen.blit(self.imagefarground1, (self.fargroundX, 0))
-        self.screen.blit(self.imagefarground2, (self.fargroundX+3072, 0))
-        self.screen.blit(self.imagefrontground1, (self.frontgroundX, 0))
-        self.screen.blit(self.imagefrontground2, (self.frontgroundX+3072, 0))
+        self.screen.blit(self.imagefarground1, (self.fargroundX1, 0))
+        self.screen.blit(self.imagefarground2, (self.fargroundX2, 0))
+        self.screen.blit(self.imagefrontground1, (self.frontgroundX1, 0))
+        self.screen.blit(self.imagefrontground2, (self.frontgroundX2, 0))
+
+        if self.fargroundX1 <= -3072 : self.fargroundX1 = 3072
+        if self.fargroundX2 <= -3072 : self.fargroundX2 = 3072
+
+        if self.frontgroundX1 <= -3072 : self.frontgroundX1 = 3072
+        if self.frontgroundX2 <= -3072 : self.frontgroundX2 = 3072
 
         if not self.ending:
-            self.fargroundX = (self.fargroundX-self.fargroundSpeed)%-3072
-            self.frontgroundX = (self.frontgroundX-self.frontgroundSpeed)%-3072
+            self.fargroundX1 = (self.fargroundX1-self.fargroundSpeed)
+            self.fargroundX2 = (self.fargroundX2-self.fargroundSpeed)
+            self.frontgroundX1 = (self.frontgroundX1-self.frontgroundSpeed)
+            self.frontgroundX2 = (self.frontgroundX2-self.frontgroundSpeed)
 
-        pygame.draw.rect(self.screen, (255, 0, 0), self.thief.collisionBox)
+        #pygame.draw.rect(self.screen, (255, 0, 0), self.thief.collisionBox)
 
         if self.isJumping:
             self.screen.blit(self.player.images[0], self.player.getCoordinates())
