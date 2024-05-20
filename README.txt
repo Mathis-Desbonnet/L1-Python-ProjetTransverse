@@ -1,0 +1,1 @@
+Pour jouer, ouvrir et lancer le fichier start.py après avoir installer pygame
