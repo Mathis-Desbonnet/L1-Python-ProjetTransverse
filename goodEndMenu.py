@@ -6,6 +6,9 @@ class goodEndMenu:
     def __init__(self) -> None:
 
         pygame.font.init()
+        pygame.display.set_caption("Get It Back !")
+        self.icon = pygame.image.load("./assets/logo_trans_icon.png").convert_alpha()
+        pygame.display.set_icon(self.icon)
         self.letsopen=False
         self.opened=False
         self.img_clock = 0

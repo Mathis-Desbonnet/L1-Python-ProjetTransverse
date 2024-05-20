@@ -16,6 +16,9 @@ class Main:
     def __init__(self) -> None:
         mixer.init()
         self.screen = pygame.display.set_mode((1920, 1080))
+        pygame.display.set_caption("Get It Back !")
+        self.icon = pygame.image.load("./assets/logo_trans_icon.png").convert_alpha()
+        pygame.display.set_icon(self.icon)
         self.running = True
 
         self.imageBack = pygame.image.load("./assets/sky_background.png").convert_alpha()
@@ -202,7 +205,7 @@ class Main:
             LongJump(x=1920-delta, y=0, image=self.imageBig[random.randint(0, 1)]),
         ]
         randomNumber = random.randint(0, 10)
-        if randomNumber < 2:
+        if randomNumber < 9:
             self.platformGroup.add(self.platfomType[randomNumber%2])
         else:
             self.platformGroup.add(self.platfomType[2])

@@ -6,6 +6,9 @@ class mainMenu:
         mixer.init()
         
         self.screen = pygame.display.set_mode((1920, 1080))
+        pygame.display.set_caption("Get It Back !")
+        self.icon = pygame.image.load("./assets/logo_trans_icon.png").convert_alpha()
+        pygame.display.set_icon(self.icon)
         self.running = True
         self.imageLaunch = pygame.image.load("./assets/button_play_0.png").convert_alpha()
         self.imageLaunch2 = pygame.image.load("./assets/button_play_1.png").convert_alpha()

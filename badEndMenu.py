@@ -16,6 +16,9 @@ class badEndMenu:
         self.current_thunder = 0
 
         mixer.music.load("./assets/deadSound.mp3")
+        pygame.display.set_caption("Get It Back !")
+        self.icon = pygame.image.load("./assets/logo_trans_icon.png").convert_alpha()
+        pygame.display.set_icon(self.icon)
 
         self.idle_imgs = (
             "./assets/thunder_0.png",
