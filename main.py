@@ -64,7 +64,7 @@ class Main:
 
         self.playerSaveYPosIfTooBig = 0
 
-        self.g = 6
+        self.g = 9.81
         self.currentSpeed = 0
         self.thiefCurrentSpeed = 0
         self.nextPlatformHeight = 768
